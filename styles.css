@@ -8,44 +8,59 @@ body {
     font-family: system-ui, -apple-system, sans-serif;
     line-height: 1.6;
     padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    margin-bottom: 10px;
-}
-
-p {
+h1 {
     margin-bottom: 15px;
 }
 
-ul, ol {
-    margin-bottom: 15px;
-    padding-left: 20px;
+#new-goal-input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
 }
 
-li {
-    margin-bottom: 5px;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
-}
-
-button {
+#add-goal-button {
+    padding: 8px 16px;
+    border: none;
+    background: #333;
+    color: white;
     cursor: pointer;
-    font-family: inherit;
 }
 
-input, textarea {
-    font-family: inherit;
+#goals-progress-bar {
+    margin: 20px 0;
+    padding: 10px;
+    background: #f5f5f5;
+    border-radius: 4px;
 }
 
-/* styles for checkbox completed */
+#goals-list {
+    list-style: decimal;
+    padding-left: 30px;
+}
+
+#goals-list li {
+    margin-bottom: 8px;
+}
+
 .completed {
     text-decoration: line-through;
-    color: #9999;
+    color: #999;
 }
 
-/* styles for progress bar */
+input[type="checkbox"] {
+    margin-right: 6px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #333;
 
+}
+
+#goals-list {
+    list-style: none;
+    padding-left: 0;
+}

@@ -31,6 +31,8 @@ function getNewGoalText() {
     //Put it all together
     let newGoalTextNode = document.createTextNode(newGoalText);
     createdListItem.appendChild(newGoalTextNode);
+    //Clear the input
+    document.getElementById('new-goal-input').value = "";
 
 }
 
