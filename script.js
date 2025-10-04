@@ -28,7 +28,7 @@ function toggleGoalComplete() {
 function updateGoalCount() {
     let goalsList = document.getElementById('goals-list');
     let goalsCount = goalsList.children.length;
-    calculateGoals(goalsCount, goalsList);
+    calculateGoals(goalsCount);
     return goalsCount;
 };
 
