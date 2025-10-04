@@ -31,9 +31,9 @@ function getNewGoalText() {
     //Put it all together
     let newGoalTextNode = document.createTextNode(newGoalText);
     createdListItem.appendChild(newGoalTextNode);
-    //Clear the input
+    //housekeeping
     document.getElementById('new-goal-input').value = "";
-
+    updateGoalCount();
 }
 
    
@@ -41,5 +41,30 @@ function getNewGoalText() {
 function toggleGoalComplete() {
     let goalListItem = this.parentElement;
     goalListItem.classList.toggle('completed', this.checked)
+    updateGoalCount();
 };
     
+
+
+
+//add event listener to progress bar? 
+// activate funct
+
+//Activate calc function whenver a new goal is added
+function updateGoalCount() {
+    //Count goals
+    let goalsList = document.getElementById('goals-list');
+    let goalsCount = goalsList.children.length;
+    calculateGoals(goalsCount);
+    return goalsCount;
+};
+
+function calculateGoals(goalsCount) {
+    let goalsList = document.getElementById('goals-list'); 
+    // let completedGoals = goalsList.checked(true).length;
+    let completedGoals = goalsList.querySelectorAll('.completed').length;
+    // console.log(completedGoals);
+
+    console.log(completedGoals);
+    console.log(goalsCount);
+};
