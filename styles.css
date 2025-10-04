@@ -41,9 +41,11 @@ input, textarea {
     font-family: inherit;
 }
 
-/* styles for checkbox unfinished */
-
-/* styles for checkbox finished */
+/* styles for checkbox completed */
+.completed {
+    text-decoration: line-through;
+    color: #9999;
+}
 
 /* styles for progress bar */
 
