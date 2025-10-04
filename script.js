@@ -3,7 +3,6 @@ let button = document.getElementById("add-goal-button")
 
 button.addEventListener('click', getNewGoalText);
 
-// Function to capture New Goal input and add it to the list
 function getNewGoalText() {
     newGoalText = document.getElementById("new-goal-input").value;
     let createdListItem = document.createElement('li');
