@@ -16,7 +16,6 @@ button.addEventListener('click', getNewGoalText);
 function getNewGoalText() {
     //Get the text inside the text input box
     newGoalText = document.getElementById("new-goal-input").value;
-    console.log("User input is: " + newGoalText);
     //create a new li element
     let createdListItem = document.createElement('li');
     let newItemCheckbox = document.createElement('input');
@@ -55,7 +54,7 @@ function updateGoalCount() {
     //Count goals
     let goalsList = document.getElementById('goals-list');
     let goalsCount = goalsList.children.length;
-    calculateGoals(goalsCount);
+    calculateGoals(goalsCount, goalsList);
     return goalsCount;
 };
 
@@ -63,8 +62,14 @@ function calculateGoals(goalsCount) {
     let goalsList = document.getElementById('goals-list'); 
     // let completedGoals = goalsList.checked(true).length;
     let completedGoals = goalsList.querySelectorAll('.completed').length;
-    // console.log(completedGoals);
-
     console.log(completedGoals);
     console.log(goalsCount);
+
+    let displayElement = document.getElementById('progress-bar-text');
+    displayElement.textContent = `You've completed ${completedGoals} of ${goalsCount}  goals | ${Math.floor((completedGoals / goalsCount) * 100 )} %  `;
+
+    // let totalGoalsTextNode = 
+    // let percentageCompleteTextNode = 
+
+    // let countDisplay = document.getElementById.
 };
