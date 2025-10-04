@@ -81,15 +81,17 @@ input[type="checkbox"] {
     transition: transform 0.1s, background 0.2s;
 }
 
-#add-goal-button:active {
-    transform: scale(0.95);
-}
-
-
-
 input[type="checkbox"]:active {
     transform: scale(0.9);
 }
+
+#add-goal-button:active {
+    transform: scale(0.95);
+}
+ 
+
+
+
 
 input[type="checkbox"] {
     margin-right: 6px;
