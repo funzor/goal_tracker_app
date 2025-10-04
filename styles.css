@@ -16,6 +16,12 @@ h1 {
     margin-bottom: 15px;
 }
 
+.goal-input-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
 #new-goal-input {
     flex: 1;
     padding: 8px;
