@@ -1,0 +1,14 @@
+Short-term tasks:
+    ✔ Add local saving for persistent goals @high @done (10/5/2025, 9:50:53 AM)
+    ✔ Load from local save state if it exists @high @done (10/5/2025, 10:28:54 AM)
+    ☐ Move completed goals to bottom of list @low 
+    ✔ Delete all Goals button @done (10/5/2025, 10:29:11 AM)
+    ☐ Delete Single item button @low
+    ☐ Add edit button to goals @low
+    
+Long-term tasks:    
+    ☐ Add sign on
+    ☐ Write to DB and access account data from anywhere
+    ☐ User can re-order goals
+    ☐ Total goal completion displays as a progress bar
+    ☐ User can create Sub goals that can act as prerequisites to completing the parent goal
