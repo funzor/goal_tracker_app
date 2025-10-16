@@ -8,17 +8,19 @@
     <title>Goal Tracker App</title>
 </head>
 <body>
-    <h1>Add a New Goal</h1>
+    <h1>Welcome to the Goal Tracker</h1>
+    <div id="goals-progress-bar">
+        <p id="progress-bar-text">Enter a goal below to get started</p>
+        <input type="button" value="🗑️ All Goals" id="delete-all-goals-button">
+    </p>
+    </div>
+    <h4>Add a New Goal</h4>
     <div class="goal-input-container">
         <input type="text" id="new-goal-input">
         <input type="button" value="Add Goal" id="add-goal-button">
     </div>
-
-    <div id="goals-progress-bar">
-        <p id="progress-bar-text">Enter a goal above to get started</p>
-    </div>
-
-    <h1>Goals</h1>
+    
+    <h2>Goals</h2>
     <ol id="goals-list">
 
     </ol>
