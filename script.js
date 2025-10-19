@@ -2,11 +2,22 @@ let newGoalText = '';
 let addGoalButton = document.getElementById("add-goal-button")
 let deleteAllGoalsButton = document.getElementById("delete-all-goals-button");
 let goalsList = document.getElementById('goals-list');
+let newGoalInput = document.getElementById('new-goal-input');
+newGoalInput.addEventListener('input', enableAddGoalButton);
+addGoalButton.addEventListener('click', getNewGoalText);
 
 let selectedImportance;
 let selectedUrgency;
 
-addGoalButton.addEventListener('click', getNewGoalText);
+
+function enableAddGoalButton(){
+    const trimmedInput = newGoalInput.value.trim();
+    if (trimmedInput.length > 0) {
+        addGoalButton.disabled = false;
+    } else {
+        addGoalButton.disabled = true;
+    }
+}
 
 function getNewGoalText() {
     newGoalText = document.getElementById("new-goal-input").value;
@@ -24,17 +35,19 @@ function getNewGoalText() {
     let parentElementOfNewListItem = createdListItem; 
     parentElementOfNewListItem.appendChild(newItemCheckbox);
     createdListItem.appendChild(goalTextSpan);
-    // let newGoalTextNode = document.createTextNode(newGoalText);
-    // createdListItem.appendChild(newGoalTextNode);
-    let createdMatrixBadge = document.createElement('span')
-    createdMatrixBadge.classList.add('matrix-badge')
-    createdListItem.appendChild(createdMatrixBadge);
-    createdMatrixBadge.textContent = (`Urgency: ${selectedUrgency.value}. Importance: ${selectedImportance.value}`)
+    let urgencyBadge = document.createElement('span')
+    urgencyBadge.classList.add('urgency-badge')
+    urgencyBadge.textContent = `Urgency: ${selectedUrgency.value}`;
+    createdListItem.appendChild(urgencyBadge);
+    let importanceBadge = document.createElement('span')
+    importanceBadge.classList.add('importance-badge')
+    importanceBadge.textContent = `Importance: ${selectedImportance.value}`;
+    createdListItem.appendChild(importanceBadge);
     createdListItem.dataset.urgency = selectedUrgency.value;
     createdListItem.dataset.importance = selectedImportance.value;
 
     document.getElementById('new-goal-input').value = "";
-    // <-- clear radio bubbles    
+    addGoalButton.disabled = true;      
     updateGoalCount();
 }
 
@@ -105,11 +118,15 @@ function buildListFromLocalStorage(goalsArray) {
         loadedListItem.appendChild(loadedListTextSpan);
         loadedListItem.dataset.importance = goalDataFromJSON.importance;
         loadedListItem.dataset.urgency = goalDataFromJSON.urgency;
-        let loadedMatrixBadge = document.createElement('span');
-        loadedMatrixBadge.textContent = `Urgency: ${goalDataFromJSON.urgency}. Importance: ${goalDataFromJSON.importance}`;
-        loadedListItem.appendChild(loadedMatrixBadge);
+        let loadedUrgencyBadge = document.createElement('span');
+        loadedUrgencyBadge.classList.add('urgency-badge');
+        loadedUrgencyBadge.textContent = `Urgency: ${goalDataFromJSON.urgency}`;
+        loadedListItem.appendChild(loadedUrgencyBadge);
+        let loadedImportanceBadge = document.createElement('span');
+        loadedImportanceBadge.classList.add('importance-badge');
+        loadedImportanceBadge.textContent = `Importance: ${goalDataFromJSON.importance}`;
+        loadedListItem.appendChild(loadedImportanceBadge);
 
-        loadedMatrixBadge.classList.add('matrix-badge')
         goalsList.appendChild(loadedListItem);
     
     }
