@@ -11,7 +11,7 @@
 
 <body>
     <!-- Top Bar -->
-    <div class="top-bar">
+    <div class="top-bar app-block app-block--header">
         <h1 class="app-title">GOAL TRACKER</h1>
         <div class="top-bar-actions">
             <span id="progress-indicator" class="progress-indicator">0/0</span>
@@ -49,128 +49,132 @@
 
     <div id="menu-overlay" class="menu-overlay"></div>
     <div class="sticky-section" id="new-goal-section">
-        <button id="new-goal-toggle" class="collapsible-toggle" type="button" aria-expanded="true" aria-controls="new-goal-content">
-            <span class="toggle-label">New Goal</span>
-            <span class="toggle-icon" aria-hidden="true">▲</span>
-        </button>
-        <div id="new-goal-content" class="collapsible-content expanded">
-            <div class="goal-input-container">
-                <div class="input-section step" data-step="1">
-                    <label class="step-label" for="new-goal-input">Goal</label>
-                    <input type="text" id="new-goal-input" placeholder="">
-                </div>
-                
-                <div class="matrix-section step" data-step="2">
-                    <label class="step-label">Priority</label>
-                    <div class="matrix-container">
-                        <div class="matrix-wrapper">
-                            <div class="matrix-axis-y">
-                                <span class="axis-arrow">↑</span>
-                                <span class="axis-label">IMPORTANT</span>
-                            </div>
-                            <div class="matrix-grid">
-                                <div class="matrix-cell matrix-low-high" data-urgency="Low" data-importance="High" title="Important & Not Urgent">
-                                    <div class="matrix-text">
-                                        <span class="matrix-primary">FOCUS</span>
-                                        <!-- <div class="matrix-tags">
-                                            <span class="matrix-tag matrix-tag--high">I↑</span>
-                                            <span class="matrix-tag matrix-tag--low">U↓</span>
-                                        </div> -->
-                                    </div>
+        <div class="app-block app-block--builder">
+            <button id="new-goal-toggle" class="collapsible-toggle" type="button" aria-expanded="true" aria-controls="new-goal-content">
+                <span class="toggle-label">New Goal</span>
+                <span class="toggle-icon" aria-hidden="true">▲</span>
+            </button>
+            <div id="new-goal-content" class="collapsible-content expanded">
+                <div class="goal-input-container">
+                    <div class="input-section step" data-step="1">
+                        <label class="step-label" for="new-goal-input">Goal</label>
+                        <input type="text" id="new-goal-input" placeholder="">
+                    </div>
+                    
+                    <div class="matrix-section step" data-step="2">
+                        <label class="step-label">Priority</label>
+                        <div class="matrix-container">
+                            <div class="matrix-wrapper">
+                                <div class="matrix-axis-y">
+                                    <span class="axis-arrow">↑</span>
+                                    <span class="axis-label">IMPORTANT</span>
                                 </div>
-                                <div class="matrix-cell matrix-high-high" data-urgency="High" data-importance="High" title="Urgent & Important">
-                                    <div class="matrix-text">
-                                        <span class="matrix-primary">CRITICAL</span>
-                                        <div class="matrix-tags">
-                                            <!-- <span class="matrix-tag matrix-tag--high">P↑</span>
-                                            <span class="matrix-tag matrix-tag--high">U↑</span> -->
+                                <div class="matrix-grid">
+                                    <div class="matrix-cell matrix-low-high" data-urgency="Low" data-importance="High" title="Important & Not Urgent">
+                                        <div class="matrix-text">
+                                            <span class="matrix-primary">FOCUS</span>
+                                            <!-- <div class="matrix-tags">
+                                                <span class="matrix-tag matrix-tag--high">I↑</span>
+                                                <span class="matrix-tag matrix-tag--low">U↓</span>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                    <div class="matrix-cell matrix-high-high" data-urgency="High" data-importance="High" title="Urgent & Important">
+                                        <div class="matrix-text">
+                                            <span class="matrix-primary">CRITICAL</span>
+                                            <div class="matrix-tags">
+                                                <!-- <span class="matrix-tag matrix-tag--high">P↑</span>
+                                                <span class="matrix-tag matrix-tag--high">U↑</span> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="matrix-cell matrix-low-low selected" data-urgency="Low" data-importance="Low" title="Not Urgent & Not Important">
+                                        <div class="matrix-text">
+                                            <span class="matrix-primary">SOMEDAY</span>
+                                            <div class="matrix-tags">
+                                                <!-- <span class="matrix-tag matrix-tag--low">P↓</span>
+                                                <span class="matrix-tag matrix-tag--low">U↓</span> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="matrix-cell matrix-high-low" data-urgency="High" data-importance="Low" title="Urgent & Not Important">
+                                        <div class="matrix-text">
+                                            <span class="matrix-primary">RUSH</span>
+                                            <div class="matrix-tags">
+                                                <!-- <span class="matrix-tag matrix-tag--low">P↓</span>
+                                                <span class="matrix-tag matrix-tag--high">U↑</span> -->
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="matrix-cell matrix-low-low selected" data-urgency="Low" data-importance="Low" title="Not Urgent & Not Important">
-                                    <div class="matrix-text">
-                                        <span class="matrix-primary">SOMEDAY</span>
-                                        <div class="matrix-tags">
-                                            <!-- <span class="matrix-tag matrix-tag--low">P↓</span>
-                                            <span class="matrix-tag matrix-tag--low">U↓</span> -->
-                                        </div>
-                                    </div>
+                                <div class="matrix-axis-x">
+                                    <span class="axis-label">URGENT</span>
+                                    <span class="axis-arrow">→</span>
                                 </div>
-                                <div class="matrix-cell matrix-high-low" data-urgency="High" data-importance="Low" title="Urgent & Not Important">
-                                    <div class="matrix-text">
-                                        <span class="matrix-primary">RUSH</span>
-                                        <div class="matrix-tags">
-                                            <!-- <span class="matrix-tag matrix-tag--low">P↓</span>
-                                            <span class="matrix-tag matrix-tag--high">U↑</span> -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="matrix-axis-x">
-                                <span class="axis-label">URGENT</span>
-                                <span class="axis-arrow">→</span>
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="step cta-step" data-step="3">
+                        <input type="button" value="Add Goal →" id="add-goal-button" disabled>
+                    </div>
                 </div>
-                
-                <div class="step cta-step" data-step="3">
-                    <input type="button" value="Add Goal →" id="add-goal-button" disabled>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-block app-block--goals">
+        <nav class="view-tabs" role="tablist">
+            <button class="view-tab active" type="button" role="tab" aria-selected="true" data-view="grid">
+                Matrix View
+            </button>
+            <button class="view-tab" type="button" role="tab" aria-selected="false" data-view="list">
+                List View
+            </button>
+        </nav>
+
+        <h2>Goals <span class="goal-count-badge" id="goal-count-badge">0</span></h2>
+    
+        <div id="empty-state" class="empty-state">
+            <p class="empty-state-text">No goals yet. Add one above.</p>
+        </div>
+    
+        <div id="goals-grid" class="goals-grid-view">
+            <div class="rotate-tip" id="rotate-tip">
+                Try rotating your phone sideways for the full matrix experience.
+            </div>
+            <div class="goals-grid">
+                <div class="grid-quadrant quadrant-focus" data-urgency="Low" data-importance="High">
+                    <span class="quadrant-label">
+                        FOCUS
+                    </span>
+                    <div class="quadrant-body" aria-live="polite"></div>
+                </div>
+                <div class="grid-quadrant quadrant-critical" data-urgency="High" data-importance="High">
+                    <span class="quadrant-label">
+                        CRITICAL
+                    </span>
+                    <div class="quadrant-body" aria-live="polite"></div>
+                </div>
+                <div class="grid-quadrant quadrant-someday" data-urgency="Low" data-importance="Low">
+                    <span class="quadrant-label">
+                        SOMEDAY
+                    </span>
+                    <div class="quadrant-body" aria-live="polite"></div>
+                </div>
+                <div class="grid-quadrant quadrant-rush" data-urgency="High" data-importance="Low">
+                    <span class="quadrant-label">
+                        RUSH
+                    </span>
+                    <div class="quadrant-body" aria-live="polite"></div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <nav class="view-tabs" role="tablist">
-        <button class="view-tab active" type="button" role="tab" aria-selected="true" data-view="grid">
-            Matrix View
-        </button>
-        <button class="view-tab" type="button" role="tab" aria-selected="false" data-view="list">
-            List View
-        </button>
-    </nav>
-
-    <h2>Goals <span class="goal-count-badge" id="goal-count-badge">0</span></h2>
     
-    <div id="empty-state" class="empty-state">
-        <p class="empty-state-text">No goals yet. Add one above.</p>
-    </div>
-    
-    <div id="goals-grid" class="goals-grid-view">
-        <div class="rotate-tip" id="rotate-tip">
-            Try rotating your phone sideways for the full matrix experience.
-        </div>
-        <div class="goals-grid">
-            <div class="grid-quadrant quadrant-focus" data-urgency="Low" data-importance="High">
-                <span class="quadrant-label">
-                    FOCUS
-                </span>
-                <div class="quadrant-body" aria-live="polite"></div>
-            </div>
-            <div class="grid-quadrant quadrant-critical" data-urgency="High" data-importance="High">
-                <span class="quadrant-label">
-                    CRITICAL
-                </span>
-                <div class="quadrant-body" aria-live="polite"></div>
-            </div>
-            <div class="grid-quadrant quadrant-someday" data-urgency="Low" data-importance="Low">
-                <span class="quadrant-label">
-                    SOMEDAY
-                </span>
-                <div class="quadrant-body" aria-live="polite"></div>
-            </div>
-            <div class="grid-quadrant quadrant-rush" data-urgency="High" data-importance="Low">
-                <span class="quadrant-label">
-                    RUSH
-                </span>
-                <div class="quadrant-body" aria-live="polite"></div>
-            </div>
-        </div>
-    </div>
-    
-    <ol id="goals-list" class="list-view-panel is-hidden">
+        <ol id="goals-list" class="list-view-panel is-hidden">
 
-    </ol>
+        </ol>
+    </div>
 
 
 

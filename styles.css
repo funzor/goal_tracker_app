@@ -21,14 +21,79 @@ body {
     min-height: 100vh;
 }
 
+/* Section Surfaces */
+.app-block {
+    --block-accent-color: var(--accent-color);
+    position: relative;
+    margin-bottom: 36px;
+    padding: 28px 32px;
+    border: 2px solid #111;
+    border-radius: 0;
+    background: #fdfdfd;
+    box-shadow: 12px 12px 0 rgba(17, 17, 17, 0.12);
+}
+
+.app-block::before {
+    content: "";
+    position: absolute;
+    left: -2px;
+    right: -2px;
+    top: -2px;
+    height: 8px;
+    background: var(--block-accent-color);
+}
+
+.app-block::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 1px solid rgba(17, 17, 17, 0.1);
+    pointer-events: none;
+}
+
+.app-block--header {
+    --block-accent-color: #111;
+    padding: 20px 24px;
+    background: #f6f6f6;
+    box-shadow: 10px 10px 0 rgba(17, 17, 17, 0.1);
+}
+
+.app-block--header::after {
+    inset: 16px;
+}
+
+.app-block--builder {
+    --block-accent-color: var(--accent-color);
+    padding: 24px 28px 32px;
+    background: #fff;
+}
+
+.app-block--builder::after {
+    inset: 18px 18px 22px;
+}
+
+.app-block--goals {
+    --block-accent-color: rgba(17, 17, 17, 1);
+    padding: 32px 32px 36px;
+    margin-bottom: 0;
+    background: #fefefe;
+    box-shadow: 14px 14px 0 rgba(17, 17, 17, 0.12);
+}
+
+.app-block--goals::before {
+    height: 10px;
+}
+
+.app-block--goals::after {
+    inset: 20px 20px 26px;
+}
+
 /* Top Bar */
 .top-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 0;
-    margin-bottom: 24px;
-    border-bottom: 2px solid #e0e0e0;
+    gap: 24px;
 }
 
 .app-title {
@@ -58,7 +123,7 @@ body {
     border: 2px solid #000;
     width: 40px;
     height: 40px;
-    border-radius: 2px;
+    border-radius: 0;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -214,17 +279,18 @@ h4 {
 .sticky-section {
     position: sticky;
     top: 0;
-    background: #fafafa;
     z-index: 10;
-    padding: 20px 0;
-    margin: -20px 0 0 0;
+    padding: 12px 0 32px;
+    margin: -12px 0 0 0;
+    background: #fafafa;
+    border-bottom: 2px solid rgba(17, 17, 17, 0.08);
 }
 
 .collapsible-toggle {
     width: 100%;
     background: #fafafa;
     border: 2px solid #000;
-    border-radius: 2px;
+    border-radius: 0;
     padding: 12px 16px;
     display: flex;
     align-items: center;
@@ -273,8 +339,8 @@ h4 {
     display: flex;
     gap: 12px;
     padding: 0;
-    margin: 24px 0 16px;
-    border-bottom: 2px solid #e0e0e0;
+    margin: 0 0 16px;
+    border-bottom: 1px solid rgba(12, 12, 12, 0.08);
 }
 
 .view-tab {
@@ -313,9 +379,9 @@ h4 {
 }
 
 .goal-input-container {
-    margin-bottom: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #e0e0e0;
+    margin: 24px 0 0;
+    padding-bottom: 0;
+    border-bottom: none;
     display: flex;
     flex-direction: column;
     gap: 32px;
@@ -391,7 +457,7 @@ h4 {
     background: #000;
     color: white;
     cursor: pointer;
-    border-radius: 2px;
+    border-radius: 0;
     font-size: 14px;
     font-weight: 800;
     letter-spacing: 0.5px;
@@ -437,7 +503,7 @@ h2 {
     background: var(--accent-color);
     color: white;
     padding: 4px 10px;
-    border-radius: 12px;
+    border-radius: 2px;
     letter-spacing: 0;
 }
 
@@ -494,7 +560,7 @@ h2 {
     padding: 60px 20px;
     text-align: center;
     border: 2px dashed #e0e0e0;
-    border-radius: 4px;
+    border-radius: 0;
     margin-bottom: 20px;
 }
 
@@ -566,7 +632,7 @@ input[type="checkbox"]:active {
     background: #f0f0f0;
     border: 1px solid #d0d0d0;
     padding: 4px 8px;
-    border-radius: 2px;
+    border-radius: 0;
     font-size: 10px;
     color: #404040;
     font-weight: 800;
