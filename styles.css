@@ -265,6 +265,45 @@ h4 {
     margin-top: 16px;
 }
 
+.is-hidden {
+    display: none !important;
+}
+
+.view-tabs {
+    display: inline-flex;
+    gap: 8px;
+    padding: 8px;
+    background: #f2f2f2;
+    border-radius: 999px;
+    margin: 12px 0 24px;
+}
+
+.view-tab {
+    border: none;
+    background: transparent;
+    padding: 8px 20px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #777;
+}
+
+.view-tab:hover,
+.view-tab:focus-visible {
+    color: #000;
+    outline: none;
+}
+
+.view-tab.active {
+    background: #000;
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
 .goal-input-container {
     margin-bottom: 20px;
     padding-bottom: 20px;
@@ -767,4 +806,135 @@ input[type="checkbox"]:active {
 .color-option.selected {
     border-color: #000;
     box-shadow: 0 0 0 2px #fff, 0 0 0 4px #000;
+}
+
+/* Goals Grid View */
+.goals-grid-view {
+    width: 100%;
+    margin-bottom: 24px;
+}
+
+.goals-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.grid-quadrant {
+    position: relative;
+    min-height: 220px;
+    padding: 32px 24px 24px 72px;
+    border: 2px solid #111;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0));
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.grid-quadrant::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    pointer-events: none;
+    border-radius: 8px;
+}
+
+.quadrant-label {
+    position: absolute;
+    left: 18px;
+    bottom: 24px;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.75);
+}
+
+.quadrant-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 100px;
+}
+
+.quadrant-body:empty::before {
+    content: "Waiting for the right mission.";
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.25);
+    font-weight: 700;
+}
+
+.grid-goal {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.04);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+}
+
+.grid-goal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+.grid-goal.completed {
+    opacity: 0.35;
+}
+
+.grid-goal .goal-text {
+    color: #111;
+}
+
+.grid-goal .category-dot {
+    width: 10px;
+    height: 10px;
+}
+
+.grid-goal input[type="checkbox"] {
+    margin-right: 4px;
+}
+
+.grid-goal .grid-quick-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+}
+
+.grid-quick-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    opacity: 0.45;
+    transition: opacity 0.2s ease;
+}
+
+.grid-quick-actions button:hover {
+    opacity: 1;
+}
+
+@media (max-width: 720px) {
+    .goals-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .grid-quadrant {
+        min-height: 200px;
+    }
+
+    .quadrant-label {
+        left: 12px;
+        letter-spacing: 6px;
+    }
 }
