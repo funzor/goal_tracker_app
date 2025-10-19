@@ -121,13 +121,54 @@
         </div>
     </div>
 
+    <nav class="view-tabs" role="tablist">
+        <button class="view-tab active" type="button" role="tab" aria-selected="true" data-view="grid">
+            Matrix View
+        </button>
+        <button class="view-tab" type="button" role="tab" aria-selected="false" data-view="list">
+            List View
+        </button>
+    </nav>
+
     <h2>Goals <span class="goal-count-badge" id="goal-count-badge">0</span></h2>
     
     <div id="empty-state" class="empty-state">
         <p class="empty-state-text">No goals yet. Add one above.</p>
     </div>
     
-    <ol id="goals-list">
+    <div id="goals-grid" class="goals-grid-view">
+        <div class="rotate-tip" id="rotate-tip">
+            Try rotating your phone sideways for the full matrix experience.
+        </div>
+        <div class="goals-grid">
+            <div class="grid-quadrant quadrant-focus" data-urgency="Low" data-importance="High">
+                <span class="quadrant-label">
+                    FOCUS
+                </span>
+                <div class="quadrant-body" aria-live="polite"></div>
+            </div>
+            <div class="grid-quadrant quadrant-critical" data-urgency="High" data-importance="High">
+                <span class="quadrant-label">
+                    CRITICAL
+                </span>
+                <div class="quadrant-body" aria-live="polite"></div>
+            </div>
+            <div class="grid-quadrant quadrant-someday" data-urgency="Low" data-importance="Low">
+                <span class="quadrant-label">
+                    SOMEDAY
+                </span>
+                <div class="quadrant-body" aria-live="polite"></div>
+            </div>
+            <div class="grid-quadrant quadrant-rush" data-urgency="High" data-importance="Low">
+                <span class="quadrant-label">
+                    RUSH
+                </span>
+                <div class="quadrant-body" aria-live="polite"></div>
+            </div>
+        </div>
+    </div>
+    
+    <ol id="goals-list" class="list-view-panel is-hidden">
 
     </ol>
 

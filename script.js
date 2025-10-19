@@ -4,7 +4,10 @@ let goalsList = document.getElementById('goals-list');
 let newGoalInput = document.getElementById('new-goal-input');
 const newGoalToggle = document.getElementById('new-goal-toggle');
 const newGoalContent = document.getElementById('new-goal-content');
+const viewTabs = document.querySelectorAll('.view-tab');
+const goalsGridView = document.getElementById('goals-grid');
 let previousGoalsCount = 0;
+let currentView = 'grid';
 
 if (newGoalInput) {
     newGoalInput.addEventListener('input', enableAddGoalButton);
@@ -26,6 +29,15 @@ if (newGoalToggle) {
         }
     });
 }
+
+viewTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        const targetView = tab.dataset.view;
+        if (targetView) {
+            setActiveView(targetView);
+        }
+    });
+});
 
 let selectedImportance = 'Low';
 let selectedUrgency = 'Low';
@@ -215,6 +227,102 @@ function syncNewGoalSectionVisibility(goalsCount) {
 
     previousGoalsCount = goalsCount;
 }
+
+function setActiveView(view) {
+    if (!goalsList || !goalsGridView) {
+        currentView = view;
+        return;
+    }
+
+    currentView = view;
+
+    viewTabs.forEach(tab => {
+        const isActive = tab.dataset.view === view;
+        tab.classList.toggle('active', isActive);
+        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+
+    if (view === 'grid') {
+        goalsGridView.classList.remove('is-hidden');
+        goalsList.classList.add('is-hidden');
+        renderGoalsGrid();
+    } else {
+        goalsGridView.classList.add('is-hidden');
+        goalsList.classList.remove('is-hidden');
+    }
+}
+
+function renderGoalsGrid() {
+    if (!goalsGridView) {
+        return;
+    }
+
+    const quadrantBodies = goalsGridView.querySelectorAll('.quadrant-body');
+    quadrantBodies.forEach(body => {
+        body.innerHTML = '';
+    });
+
+    Array.from(goalsList.children).forEach(goalItem => {
+        const importance = goalItem.dataset.importance || 'Low';
+        const urgency = goalItem.dataset.urgency || 'Low';
+        const quadrant = goalsGridView.querySelector(`.grid-quadrant[data-importance="${importance}"][data-urgency="${urgency}"] .quadrant-body`);
+        if (!quadrant) {
+            return;
+        }
+
+        const gridGoal = document.createElement('div');
+        gridGoal.classList.add('grid-goal');
+        if (goalItem.classList.contains('completed')) {
+            gridGoal.classList.add('completed');
+        }
+
+        const sourceDot = goalItem.querySelector('.category-dot');
+        if (sourceDot) {
+            const dotClone = sourceDot.cloneNode(true);
+            gridGoal.appendChild(dotClone);
+        }
+
+        const originalCheckbox = goalItem.querySelector('input[type="checkbox"]');
+        const gridCheckbox = document.createElement('input');
+        gridCheckbox.type = 'checkbox';
+        gridCheckbox.checked = originalCheckbox ? originalCheckbox.checked : false;
+        gridCheckbox.addEventListener('change', () => {
+            if (!originalCheckbox) {
+                return;
+            }
+            if (originalCheckbox.checked !== gridCheckbox.checked) {
+                originalCheckbox.checked = gridCheckbox.checked;
+                originalCheckbox.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        });
+        gridGoal.appendChild(gridCheckbox);
+
+        const textSpan = document.createElement('span');
+        textSpan.classList.add('goal-text');
+        const sourceText = goalItem.querySelector('.goal-text');
+        textSpan.textContent = sourceText ? sourceText.textContent : '';
+        gridGoal.appendChild(textSpan);
+
+        const quickActionsWrapper = document.createElement('div');
+        quickActionsWrapper.classList.add('grid-quick-actions');
+        const deleteOriginal = goalItem.querySelector('.quick-action-btn');
+        if (deleteOriginal) {
+            const deleteBtn = document.createElement('button');
+            deleteBtn.type = 'button';
+            deleteBtn.setAttribute('aria-label', 'Delete goal');
+            deleteBtn.textContent = '🗑';
+            deleteBtn.addEventListener('click', () => {
+                deleteOriginal.click();
+            });
+            quickActionsWrapper.appendChild(deleteBtn);
+        }
+        if (quickActionsWrapper.children.length > 0) {
+            gridGoal.appendChild(quickActionsWrapper);
+        }
+
+        quadrant.appendChild(gridGoal);
+    });
+}
     
 function updateGoalCount() {
     let goalsCount = goalsList.children.length;
@@ -245,6 +353,7 @@ function updateGoalCount() {
     }
     
     syncNewGoalSectionVisibility(goalsCount);
+    renderGoalsGrid();
 
     return goalsCount;
 };
@@ -341,6 +450,7 @@ function buildListFromLocalStorage(goalsArray) {
 }
 
 lookForGoalsOnPageLoad();
+setActiveView(currentView);
 function lookForGoalsOnPageLoad() {
     const goalsJSON = localStorage.getItem('goals');
     console.log('Loading goals from localStorage:', goalsJSON);
