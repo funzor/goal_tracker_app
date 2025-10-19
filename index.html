@@ -10,32 +10,97 @@
 </head>
 
 <body>
-    <h1>Welcome to the Goal Tracker</h1>
-    <div id="goals-progress-bar">
-        <p id="progress-bar-text">Enter a goal below to get started</p>
-        <input type="button" value="🗑️ All Goals" id="delete-all-goals-button">
-        </p>
-    </div>
-    <h4>Add a New Goal</h4>
-    <div class="goal-input-container">
-        <input type="text" id="new-goal-input">
-    </div>
-    <div>
-        Urgency:
-        <label for="highUrgency"> <input type="radio" id="highUrgency" name="urgency" value="High">High</input></label>
-        <label for="lowUrgency"><input type="radio" name="urgency" id="lowUrgency" value="Low" checked>Low</input></label>
-
-        <br />
-        Importance: 
-        <label for="highImportance"><input type="radio" id="highImportance" name="importance" value="High">High</input></label>
-        <label for="lowImportance"><input type="radio" name="importance" id="lowImportance" value="Low" checked>Low</input></label>
-
-    </div>
-    <div>
-        <input type="button" value="Add Goal" id="add-goal-button" disabled>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <h1 class="app-title">GOAL TRACKER</h1>
+        <div class="top-bar-actions">
+            <span id="progress-indicator" class="progress-indicator">0/0</span>
+            <button id="menu-button" class="menu-button">
+                <span class="menu-icon">☰</span>
+            </button>
+        </div>
     </div>
 
-    <h2>Goals</h2>
+    <!-- Slide-out Menu -->
+    <div id="menu-panel" class="menu-panel">
+        <div class="menu-header">
+            <h3>Settings</h3>
+            <button id="menu-close" class="menu-close">✕</button>
+        </div>
+        
+        <div class="menu-section">
+            <label class="menu-label">Theme Color</label>
+            <div class="color-options">
+                <div class="color-option selected" data-color="black" style="background: #000;" title="Midnight"></div>
+                <div class="color-option" data-color="blue" style="background: #0066FF;" title="Electric"></div>
+                <div class="color-option" data-color="orange" style="background: #FF6B00;" title="Tangerine"></div>
+                <div class="color-option" data-color="green" style="background: #00C853;" title="Neon"></div>
+                <div class="color-option" data-color="pink" style="background: #FF006E;" title="Magenta"></div>
+                <div class="color-option" data-color="purple" style="background: #7C3AED;" title="Violet"></div>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <button id="menu-delete-all" class="menu-action-button delete-button">
+                Clear All Goals
+            </button>
+        </div>
+
+        <div class="menu-section menu-placeholder">
+            <button class="menu-action-button" disabled>Export Goals</button>
+            <button class="menu-action-button" disabled>Import Goals</button>
+            <button class="menu-action-button" disabled>Account Settings</button>
+        </div>
+    </div>
+
+    <div id="menu-overlay" class="menu-overlay"></div>
+    <div class="sticky-section">
+        <h4>Add a New Goal</h4>
+        <div class="goal-input-container">
+            <div class="input-section">
+                <label class="step-label">Step 1: What needs to be done?</label>
+                <input type="text" id="new-goal-input" placeholder="Type your goal...">
+            </div>
+            
+            <div class="matrix-section">
+                <label class="step-label">Step 2: Choose priority</label>
+                <div class="matrix-container">
+            <div class="matrix-wrapper">
+                <div class="matrix-axis-y">
+                    <span class="axis-arrow">↑</span>
+                    <span class="axis-label">IMPORTANT</span>
+                </div>
+                <div class="matrix-grid">
+                    <div class="matrix-cell matrix-low-high" data-urgency="Low" data-importance="High" title="Not Urgent & Important">
+                        <span class="matrix-text">SCHEDULE</span>
+                    </div>
+                    <div class="matrix-cell matrix-high-high" data-urgency="High" data-importance="High" title="Urgent & Important">
+                        <span class="matrix-text">DO</span>
+                    </div>
+                    <div class="matrix-cell matrix-low-low selected" data-urgency="Low" data-importance="Low" title="Not Urgent & Not Important">
+                        <span class="matrix-text">DELAY</span>
+                    </div>
+                    <div class="matrix-cell matrix-high-low" data-urgency="High" data-importance="Low" title="Urgent & Not Important">
+                        <span class="matrix-text">DELEGATE</span>
+                    </div>
+                </div>
+                <div class="matrix-axis-x">
+                    <span class="axis-label">URGENT</span>
+                    <span class="axis-arrow">→</span>
+                </div>
+                </div>
+            </div>
+            
+            <input type="button" value="Step 3: Add Goal →" id="add-goal-button" disabled>
+        </div>
+    </div>
+
+    <h2>Goals <span class="goal-count-badge" id="goal-count-badge">0</span></h2>
+    
+    <div id="empty-state" class="empty-state">
+        <p class="empty-state-text">No goals yet. Add one above to get started!</p>
+    </div>
+    
     <ol id="goals-list">
 
     </ol>

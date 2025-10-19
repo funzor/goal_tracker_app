@@ -1,13 +1,98 @@
 let newGoalText = '';
 let addGoalButton = document.getElementById("add-goal-button")
-let deleteAllGoalsButton = document.getElementById("delete-all-goals-button");
 let goalsList = document.getElementById('goals-list');
 let newGoalInput = document.getElementById('new-goal-input');
 newGoalInput.addEventListener('input', enableAddGoalButton);
 addGoalButton.addEventListener('click', getNewGoalText);
 
-let selectedImportance;
-let selectedUrgency;
+let selectedImportance = 'Low';
+let selectedUrgency = 'Low';
+
+// -------- Matrix Quadrant Selector ----------//
+const matrixCells = document.querySelectorAll('.matrix-cell');
+
+matrixCells.forEach(cell => {
+    cell.addEventListener('click', function() {
+        // Remove selected from all cells
+        matrixCells.forEach(c => c.classList.remove('selected'));
+        // Add selected to clicked cell
+        this.classList.add('selected');
+        // Store the values
+        selectedUrgency = this.dataset.urgency;
+        selectedImportance = this.dataset.importance;
+    });
+});
+
+// -------- Color Theme System ----------//
+const colorThemes = {
+    black: { primary: '#000', hover: '#333', light: 'rgba(0, 0, 0, 0.1)' },
+    blue: { primary: '#0066FF', hover: '#0052CC', light: 'rgba(0, 102, 255, 0.1)' },
+    orange: { primary: '#FF6B00', hover: '#CC5500', light: 'rgba(255, 107, 0, 0.1)' },
+    green: { primary: '#00C853', hover: '#00A142', light: 'rgba(0, 200, 83, 0.1)' },
+    pink: { primary: '#FF006E', hover: '#CC0058', light: 'rgba(255, 0, 110, 0.1)' },
+    purple: { primary: '#7C3AED', hover: '#6328E0', light: 'rgba(124, 58, 237, 0.1)' }
+};
+
+function setThemeColor(colorName) {
+    const theme = colorThemes[colorName];
+    document.documentElement.style.setProperty('--accent-color', theme.primary);
+    document.documentElement.style.setProperty('--accent-hover', theme.hover);
+    document.documentElement.style.setProperty('--accent-light', theme.light);
+    localStorage.setItem('themeColor', colorName);
+}
+
+function loadThemeColor() {
+    const savedColor = localStorage.getItem('themeColor') || 'black';
+    setThemeColor(savedColor);
+    
+    // Update selected state in UI
+    document.querySelectorAll('.color-option').forEach(option => {
+        option.classList.remove('selected');
+        if (option.dataset.color === savedColor) {
+            option.classList.add('selected');
+        }
+    });
+}
+
+// Color picker event listeners
+document.querySelectorAll('.color-option').forEach(option => {
+    option.addEventListener('click', function() {
+        const colorName = this.dataset.color;
+        document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+        this.classList.add('selected');
+        setThemeColor(colorName);
+    });
+});
+
+// Load theme on page load
+loadThemeColor();
+
+// -------- Menu Toggle ----------//
+const menuButton = document.getElementById('menu-button');
+const menuPanel = document.getElementById('menu-panel');
+const menuOverlay = document.getElementById('menu-overlay');
+const menuClose = document.getElementById('menu-close');
+const menuDeleteAll = document.getElementById('menu-delete-all');
+
+function openMenu() {
+    menuPanel.classList.add('active');
+    menuOverlay.classList.add('active');
+}
+
+function closeMenu() {
+    menuPanel.classList.remove('active');
+    menuOverlay.classList.remove('active');
+}
+
+menuButton.addEventListener('click', openMenu);
+menuClose.addEventListener('click', closeMenu);
+menuOverlay.addEventListener('click', closeMenu);
+
+// Move delete all functionality to menu
+menuDeleteAll.addEventListener('click', function() {
+    deleteAllGoals();
+    closeMenu();
+});
 
 
 function enableAddGoalButton(){
@@ -21,8 +106,6 @@ function enableAddGoalButton(){
 
 function getNewGoalText() {
     newGoalText = document.getElementById("new-goal-input").value;
-    selectedImportance = document.querySelector('input[name="importance"]:checked');
-    selectedUrgency = document.querySelector('input[name="urgency"]:checked');
     let createdListItem = document.createElement('li');
     let newItemCheckbox = document.createElement('input');
     newItemCheckbox.type = 'checkbox';
@@ -33,18 +116,40 @@ function getNewGoalText() {
     let parentElementOfNewGoalText = document.getElementById('goals-list');   
     parentElementOfNewGoalText.appendChild(createdListItem);
     let parentElementOfNewListItem = createdListItem; 
+    
+    // Add category dot based on matrix quadrant
+    let categoryDot = document.createElement('span');
+    categoryDot.classList.add('category-dot');
+    categoryDot.dataset.urgency = selectedUrgency;
+    categoryDot.dataset.importance = selectedImportance;
+    createdListItem.appendChild(categoryDot);
+    
     parentElementOfNewListItem.appendChild(newItemCheckbox);
     createdListItem.appendChild(goalTextSpan);
     let urgencyBadge = document.createElement('span')
     urgencyBadge.classList.add('urgency-badge')
-    urgencyBadge.textContent = `Urgency: ${selectedUrgency.value}`;
+    urgencyBadge.textContent = `U: ${selectedUrgency}`;
     createdListItem.appendChild(urgencyBadge);
     let importanceBadge = document.createElement('span')
     importanceBadge.classList.add('importance-badge')
-    importanceBadge.textContent = `Importance: ${selectedImportance.value}`;
+    importanceBadge.textContent = `I: ${selectedImportance}`;
     createdListItem.appendChild(importanceBadge);
-    createdListItem.dataset.urgency = selectedUrgency.value;
-    createdListItem.dataset.importance = selectedImportance.value;
+    
+    // Add quick actions
+    let quickActions = document.createElement('div');
+    quickActions.classList.add('quick-actions');
+    let deleteBtn = document.createElement('button');
+    deleteBtn.classList.add('quick-action-btn');
+    deleteBtn.textContent = '🗑';
+    deleteBtn.addEventListener('click', function() {
+        createdListItem.remove();
+        updateGoalCount();
+    });
+    quickActions.appendChild(deleteBtn);
+    createdListItem.appendChild(quickActions);
+    
+    createdListItem.dataset.urgency = selectedUrgency;
+    createdListItem.dataset.importance = selectedImportance;
 
     document.getElementById('new-goal-input').value = "";
     addGoalButton.disabled = true;      
@@ -61,6 +166,30 @@ function updateGoalCount() {
     let goalsCount = goalsList.children.length;
     calculateGoals(goalsCount);
     saveGoals();
+    
+    // Update badge
+    const badge = document.getElementById('goal-count-badge');
+    if (badge) {
+        badge.textContent = goalsCount;
+    }
+    
+    // Update progress indicator
+    const progressIndicator = document.getElementById('progress-indicator');
+    if (progressIndicator) {
+        const completedGoals = goalsList.querySelectorAll('.completed').length;
+        progressIndicator.textContent = `${completedGoals}/${goalsCount}`;
+    }
+    
+    // Toggle empty state
+    const emptyState = document.getElementById('empty-state');
+    if (emptyState) {
+        if (goalsCount === 0) {
+            emptyState.classList.remove('hidden');
+        } else {
+            emptyState.classList.add('hidden');
+        }
+    }
+    
     return goalsCount;
 };
 
@@ -113,6 +242,12 @@ function buildListFromLocalStorage(goalsArray) {
         loadedListTextSpan.classList.add('goal-text');
         loadedListTextSpan.textContent = goalDataFromJSON.text;
    
+        // Add category dot
+        let loadedCategoryDot = document.createElement('span');
+        loadedCategoryDot.classList.add('category-dot');
+        loadedCategoryDot.dataset.urgency = goalDataFromJSON.urgency;
+        loadedCategoryDot.dataset.importance = goalDataFromJSON.importance;
+        loadedListItem.appendChild(loadedCategoryDot);
 
         loadedListItem.appendChild(loadedItemCheckbox);
         loadedListItem.appendChild(loadedListTextSpan);
@@ -146,7 +281,6 @@ function lookForGoalsOnPageLoad() {
 };
 
 // -------- Delete All Goals Button ----------//
-deleteAllGoalsButton.addEventListener('click', deleteAllGoals);
 function deleteAllGoals() {
     localStorage.removeItem('goals');
     goalsList.innerHTML = "";
