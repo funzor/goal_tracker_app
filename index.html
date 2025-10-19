@@ -48,69 +48,75 @@
     </div>
 
     <div id="menu-overlay" class="menu-overlay"></div>
-    <div class="sticky-section">
-        <h4>New Goal</h4>
-        <div class="goal-input-container">
-            <div class="input-section step" data-step="1">
-                <label class="step-label" for="new-goal-input">Goal</label>
-                <input type="text" id="new-goal-input" placeholder="">
-            </div>
-            
-            <div class="matrix-section step" data-step="2">
-                <label class="step-label">Priority</label>
-                <div class="matrix-container">
-            <div class="matrix-wrapper">
-                <div class="matrix-axis-y">
-                    <span class="axis-arrow">↑</span>
-                    <span class="axis-label">IMPORTANT</span>
+    <div class="sticky-section" id="new-goal-section">
+        <button id="new-goal-toggle" class="collapsible-toggle" type="button" aria-expanded="true" aria-controls="new-goal-content">
+            <span class="toggle-label">New Goal</span>
+            <span class="toggle-icon" aria-hidden="true">▲</span>
+        </button>
+        <div id="new-goal-content" class="collapsible-content expanded">
+            <div class="goal-input-container">
+                <div class="input-section step" data-step="1">
+                    <label class="step-label" for="new-goal-input">Goal</label>
+                    <input type="text" id="new-goal-input" placeholder="">
                 </div>
-                <div class="matrix-grid">
-                    <div class="matrix-cell matrix-low-high" data-urgency="Low" data-importance="High" title="Important & Not Urgent">
-                        <div class="matrix-text">
-                            <span class="matrix-primary">FOCUS</span>
-                            <!-- <div class="matrix-tags">
-                                <span class="matrix-tag matrix-tag--high">I↑</span>
-                                <span class="matrix-tag matrix-tag--low">U↓</span>
-                            </div> -->
-                        </div>
-                    </div>
-                    <div class="matrix-cell matrix-high-high" data-urgency="High" data-importance="High" title="Urgent & Important">
-                        <div class="matrix-text">
-                            <span class="matrix-primary">CRITICAL</span>
-                            <div class="matrix-tags">
-                                <!-- <span class="matrix-tag matrix-tag--high">P↑</span>
-                                <span class="matrix-tag matrix-tag--high">U↑</span> -->
+                
+                <div class="matrix-section step" data-step="2">
+                    <label class="step-label">Priority</label>
+                    <div class="matrix-container">
+                        <div class="matrix-wrapper">
+                            <div class="matrix-axis-y">
+                                <span class="axis-arrow">↑</span>
+                                <span class="axis-label">IMPORTANT</span>
+                            </div>
+                            <div class="matrix-grid">
+                                <div class="matrix-cell matrix-low-high" data-urgency="Low" data-importance="High" title="Important & Not Urgent">
+                                    <div class="matrix-text">
+                                        <span class="matrix-primary">FOCUS</span>
+                                        <!-- <div class="matrix-tags">
+                                            <span class="matrix-tag matrix-tag--high">I↑</span>
+                                            <span class="matrix-tag matrix-tag--low">U↓</span>
+                                        </div> -->
+                                    </div>
+                                </div>
+                                <div class="matrix-cell matrix-high-high" data-urgency="High" data-importance="High" title="Urgent & Important">
+                                    <div class="matrix-text">
+                                        <span class="matrix-primary">CRITICAL</span>
+                                        <div class="matrix-tags">
+                                            <!-- <span class="matrix-tag matrix-tag--high">P↑</span>
+                                            <span class="matrix-tag matrix-tag--high">U↑</span> -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="matrix-cell matrix-low-low selected" data-urgency="Low" data-importance="Low" title="Not Urgent & Not Important">
+                                    <div class="matrix-text">
+                                        <span class="matrix-primary">SOMEDAY</span>
+                                        <div class="matrix-tags">
+                                            <!-- <span class="matrix-tag matrix-tag--low">P↓</span>
+                                            <span class="matrix-tag matrix-tag--low">U↓</span> -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="matrix-cell matrix-high-low" data-urgency="High" data-importance="Low" title="Urgent & Not Important">
+                                    <div class="matrix-text">
+                                        <span class="matrix-primary">RUSH</span>
+                                        <div class="matrix-tags">
+                                            <!-- <span class="matrix-tag matrix-tag--low">P↓</span>
+                                            <span class="matrix-tag matrix-tag--high">U↑</span> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="matrix-axis-x">
+                                <span class="axis-label">URGENT</span>
+                                <span class="axis-arrow">→</span>
                             </div>
                         </div>
                     </div>
-                    <div class="matrix-cell matrix-low-low selected" data-urgency="Low" data-importance="Low" title="Not Urgent & Not Important">
-                        <div class="matrix-text">
-                            <span class="matrix-primary">SOMEDAY</span>
-                            <div class="matrix-tags">
-                                <!-- <span class="matrix-tag matrix-tag--low">P↓</span>
-                                <span class="matrix-tag matrix-tag--low">U↓</span> -->
-                            </div>
-                        </div>
-                    </div>
-                    <div class="matrix-cell matrix-high-low" data-urgency="High" data-importance="Low" title="Urgent & Not Important">
-                        <div class="matrix-text">
-                            <span class="matrix-primary">RUSH</span>
-                            <div class="matrix-tags">
-                                <!-- <span class="matrix-tag matrix-tag--low">P↓</span>
-                                <span class="matrix-tag matrix-tag--high">U↑</span> -->
-                            </div>
-                        </div>
-                    </div>
                 </div>
-                <div class="matrix-axis-x">
-                    <span class="axis-label">URGENT</span>
-                    <span class="axis-arrow">→</span>
+                
+                <div class="step cta-step" data-step="3">
+                    <input type="button" value="Add Goal →" id="add-goal-button" disabled>
                 </div>
-                </div>
-            </div>
-            
-            <div class="step cta-step" data-step="3">
-                <input type="button" value="Add Goal →" id="add-goal-button" disabled>
             </div>
         </div>
     </div>

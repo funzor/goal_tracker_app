@@ -2,8 +2,30 @@ let newGoalText = '';
 let addGoalButton = document.getElementById("add-goal-button")
 let goalsList = document.getElementById('goals-list');
 let newGoalInput = document.getElementById('new-goal-input');
-newGoalInput.addEventListener('input', enableAddGoalButton);
-addGoalButton.addEventListener('click', getNewGoalText);
+const newGoalToggle = document.getElementById('new-goal-toggle');
+const newGoalContent = document.getElementById('new-goal-content');
+let previousGoalsCount = 0;
+
+if (newGoalInput) {
+    newGoalInput.addEventListener('input', enableAddGoalButton);
+}
+
+if (addGoalButton) {
+    addGoalButton.addEventListener('click', getNewGoalText);
+}
+
+if (newGoalToggle) {
+    newGoalToggle.addEventListener('click', () => {
+        if (!newGoalContent) {
+            return;
+        }
+        const shouldExpand = !newGoalContent.classList.contains('expanded');
+        setNewGoalSectionState(shouldExpand);
+        if (shouldExpand && newGoalInput) {
+            newGoalInput.focus();
+        }
+    });
+}
 
 let selectedImportance = 'Low';
 let selectedUrgency = 'Low';
@@ -161,6 +183,38 @@ function toggleGoalComplete() {
     goalListItem.classList.toggle('completed', this.checked)
     updateGoalCount();
 };
+
+function setNewGoalSectionState(expanded) {
+    if (!newGoalContent || !newGoalToggle) {
+        return;
+    }
+
+    if (expanded) {
+        newGoalContent.classList.add('expanded');
+        newGoalToggle.setAttribute('aria-expanded', 'true');
+    } else {
+        newGoalContent.classList.remove('expanded');
+        newGoalToggle.setAttribute('aria-expanded', 'false');
+        if (newGoalInput) {
+            newGoalInput.blur();
+        }
+    }
+}
+
+function syncNewGoalSectionVisibility(goalsCount) {
+    if (!newGoalContent || !newGoalToggle) {
+        previousGoalsCount = goalsCount;
+        return;
+    }
+
+    if (goalsCount === 0) {
+        setNewGoalSectionState(true);
+    } else if (previousGoalsCount === 0 && goalsCount > 0) {
+        setNewGoalSectionState(false);
+    }
+
+    previousGoalsCount = goalsCount;
+}
     
 function updateGoalCount() {
     let goalsCount = goalsList.children.length;
@@ -190,6 +244,8 @@ function updateGoalCount() {
         }
     }
     
+    syncNewGoalSectionVisibility(goalsCount);
+
     return goalsCount;
 };
 
