@@ -29,7 +29,7 @@
         </div>
         
         <div class="menu-section">
-            <label class="menu-label">Theme Color</label>
+            <label class="menu-label">Theme</label>
             <div class="color-options">
                 <div class="color-option selected" data-color="black" style="background: #000;" title="Midnight"></div>
                 <div class="color-option" data-color="blue" style="background: #0066FF;" title="Electric"></div>
@@ -42,28 +42,22 @@
 
         <div class="menu-section">
             <button id="menu-delete-all" class="menu-action-button delete-button">
-                Clear All Goals
+                Clear Goals
             </button>
-        </div>
-
-        <div class="menu-section menu-placeholder">
-            <button class="menu-action-button" disabled>Export Goals</button>
-            <button class="menu-action-button" disabled>Import Goals</button>
-            <button class="menu-action-button" disabled>Account Settings</button>
         </div>
     </div>
 
     <div id="menu-overlay" class="menu-overlay"></div>
     <div class="sticky-section">
-        <h4>Add a New Goal</h4>
+        <h4>New Goal</h4>
         <div class="goal-input-container">
-            <div class="input-section">
-                <label class="step-label">Step 1: What needs to be done?</label>
-                <input type="text" id="new-goal-input" placeholder="Type your goal...">
+            <div class="input-section step" data-step="1">
+                <label class="step-label" for="new-goal-input">Goal</label>
+                <input type="text" id="new-goal-input" placeholder="">
             </div>
             
-            <div class="matrix-section">
-                <label class="step-label">Step 2: Choose priority</label>
+            <div class="matrix-section step" data-step="2">
+                <label class="step-label">Priority</label>
                 <div class="matrix-container">
             <div class="matrix-wrapper">
                 <div class="matrix-axis-y">
@@ -71,17 +65,41 @@
                     <span class="axis-label">IMPORTANT</span>
                 </div>
                 <div class="matrix-grid">
-                    <div class="matrix-cell matrix-low-high" data-urgency="Low" data-importance="High" title="Not Urgent & Important">
-                        <span class="matrix-text">SCHEDULE</span>
+                    <div class="matrix-cell matrix-low-high" data-urgency="Low" data-importance="High" title="Important & Not Urgent">
+                        <div class="matrix-text">
+                            <span class="matrix-primary">FOCUS</span>
+                            <!-- <div class="matrix-tags">
+                                <span class="matrix-tag matrix-tag--high">I↑</span>
+                                <span class="matrix-tag matrix-tag--low">U↓</span>
+                            </div> -->
+                        </div>
                     </div>
                     <div class="matrix-cell matrix-high-high" data-urgency="High" data-importance="High" title="Urgent & Important">
-                        <span class="matrix-text">DO</span>
+                        <div class="matrix-text">
+                            <span class="matrix-primary">CRITICAL</span>
+                            <div class="matrix-tags">
+                                <!-- <span class="matrix-tag matrix-tag--high">P↑</span>
+                                <span class="matrix-tag matrix-tag--high">U↑</span> -->
+                            </div>
+                        </div>
                     </div>
                     <div class="matrix-cell matrix-low-low selected" data-urgency="Low" data-importance="Low" title="Not Urgent & Not Important">
-                        <span class="matrix-text">DELAY</span>
+                        <div class="matrix-text">
+                            <span class="matrix-primary">SOMEDAY</span>
+                            <div class="matrix-tags">
+                                <!-- <span class="matrix-tag matrix-tag--low">P↓</span>
+                                <span class="matrix-tag matrix-tag--low">U↓</span> -->
+                            </div>
+                        </div>
                     </div>
                     <div class="matrix-cell matrix-high-low" data-urgency="High" data-importance="Low" title="Urgent & Not Important">
-                        <span class="matrix-text">DELEGATE</span>
+                        <div class="matrix-text">
+                            <span class="matrix-primary">RUSH</span>
+                            <div class="matrix-tags">
+                                <!-- <span class="matrix-tag matrix-tag--low">P↓</span>
+                                <span class="matrix-tag matrix-tag--high">U↑</span> -->
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="matrix-axis-x">
@@ -91,14 +109,16 @@
                 </div>
             </div>
             
-            <input type="button" value="Step 3: Add Goal →" id="add-goal-button" disabled>
+            <div class="step cta-step" data-step="3">
+                <input type="button" value="Add Goal →" id="add-goal-button" disabled>
+            </div>
         </div>
     </div>
 
     <h2>Goals <span class="goal-count-badge" id="goal-count-badge">0</span></h2>
     
     <div id="empty-state" class="empty-state">
-        <p class="empty-state-text">No goals yet. Add one above to get started!</p>
+        <p class="empty-state-text">No goals yet. Add one above.</p>
     </div>
     
     <ol id="goals-list">

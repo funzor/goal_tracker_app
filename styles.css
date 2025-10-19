@@ -202,10 +202,6 @@ body {
     color: white;
 }
 
-.menu-placeholder {
-    opacity: 0.5;
-}
-
 h4 {
     color: #404040;
     font-weight: 700;
@@ -231,6 +227,38 @@ h4 {
     display: flex;
     flex-direction: column;
     gap: 32px;
+}
+
+.step {
+    position: relative;
+    padding-left: 36px;
+}
+
+.step::before {
+    content: attr(data-step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #000;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fafafa;
+}
+
+.cta-step {
+    padding-left: 36px;
+}
+
+.cta-step::before {
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .input-section {
@@ -524,7 +552,9 @@ input[type="checkbox"]:active {
     cursor: pointer;
     transition: all 0.15s;
     position: relative;
-    border: 2px solid transparent;
+    overflow: hidden;
+    outline: 3px solid transparent;
+    outline-offset: -3px;
 }
 
 /* Color intensity based on urgency + importance */
@@ -534,56 +564,134 @@ input[type="checkbox"]:active {
 
 .matrix-high-low,
 .matrix-low-high {
-    background: var(--accent-color);
-    opacity: 0.3;
+    background: transparent;
 }
 
 .matrix-high-high {
-    background: var(--accent-color);
-    opacity: 0.7;
+    background: transparent;
 }
 
-.matrix-cell.selected.matrix-high-high {
-    opacity: 1;
+.matrix-cell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 0;
+}
+
+.matrix-high-low::before,
+.matrix-low-high::before {
+    background: var(--accent-color);
+    opacity: 0.2;
+}
+
+.matrix-high-high::before {
+    background: var(--accent-color);
+    opacity: 0.5;
 }
 
 .matrix-text {
-    font-size: 12px;
-    font-weight: 900;
-    letter-spacing: 0.8px;
-    color: #333;
-    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
     user-select: none;
+    position: relative;
+    z-index: 1;
 }
 
-.matrix-low-low .matrix-text {
-    color: #999;
+.matrix-primary {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #1f1f1f;
+    display: inline-block;
 }
 
-.matrix-high-high .matrix-text {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 18px;
-    letter-spacing: 1px;
+.matrix-tags {
+    display: flex;
+    gap: 6px;
 }
 
-.matrix-low-high .matrix-text {
+.matrix-tag {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+}
+
+.matrix-tag--high {
+    background: var(--accent-color);
+    color: #fff;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.matrix-tag--low {
+    background: rgba(0, 0, 0, 0.05);
+    color: #4a4a4a;
+    border-color: rgba(0, 0, 0, 0.05);
+}
+
+.matrix-high-high .matrix-primary,
+.matrix-high-high .matrix-tag--low {
+    color: #fff;
+}
+
+.matrix-high-high .matrix-tag--high {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.matrix-high-high .matrix-tag {
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.matrix-low-high .matrix-primary {
     transform: rotate(-90deg);
 }
 
-.matrix-high-low .matrix-text {
+.matrix-high-low .matrix-primary {
     transform: rotate(90deg);
 }
 
-.matrix-cell:hover {
-    opacity: 0.8;
-    transform: scale(0.98);
+.matrix-cell:hover:not(.selected) {
+    filter: brightness(0.95);
 }
 
 .matrix-cell.selected {
-    border-color: #000;
-    box-shadow: inset 0 0 0 2px #fff;
+    outline-color: #000;
+    outline-width: 4px;
     z-index: 1;
-    opacity: 1 !important;
+}
+
+.matrix-cell.selected.matrix-low-low {
+    background: #d0d0d0;
+}
+
+.matrix-cell.selected.matrix-high-low,
+.matrix-cell.selected.matrix-low-high {
+    background: transparent;
+}
+
+.matrix-cell.selected.matrix-high-high {
+    background: transparent;
+}
+
+.matrix-cell.selected.matrix-high-low::before,
+.matrix-cell.selected.matrix-low-high::before {
+    opacity: 0.5;
+}
+
+.matrix-cell.selected.matrix-high-high::before {
+    opacity: 1;
 }
 
 /* Color Options in Menu */

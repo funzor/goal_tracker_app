@@ -128,7 +128,7 @@ function getNewGoalText() {
     createdListItem.appendChild(goalTextSpan);
     let urgencyBadge = document.createElement('span')
     urgencyBadge.classList.add('urgency-badge')
-    urgencyBadge.textContent = `U: ${selectedUrgency}`;
+    urgencyBadge.textContent = `Urgency: ${selectedUrgency}`;
     createdListItem.appendChild(urgencyBadge);
     let importanceBadge = document.createElement('span')
     importanceBadge.classList.add('importance-badge')
@@ -196,7 +196,9 @@ function updateGoalCount() {
 function calculateGoals(goalsCount) {  
     let completedGoals = goalsList.querySelectorAll('.completed').length;
     let displayElement = document.getElementById('progress-bar-text');
-    displayElement.textContent = `You've completed ${completedGoals} of ${goalsCount}  goals | ${Math.floor((completedGoals / goalsCount) * 100 )} %  `;
+    if (displayElement) {
+        displayElement.textContent = `You've completed ${completedGoals} of ${goalsCount}  goals | ${Math.floor((completedGoals / goalsCount) * 100 )} %  `;
+    }
 };
 
 
@@ -224,6 +226,7 @@ function saveGoals() {
     } ;
     const goalsJSON = JSON.stringify(goalsListArray);
     localStorage.setItem('goals', goalsJSON);
+    console.log('Saved goals:', goalsJSON);
     return goalsListArray;
 }
 
@@ -259,8 +262,21 @@ function buildListFromLocalStorage(goalsArray) {
         loadedListItem.appendChild(loadedUrgencyBadge);
         let loadedImportanceBadge = document.createElement('span');
         loadedImportanceBadge.classList.add('importance-badge');
-        loadedImportanceBadge.textContent = `Importance: ${goalDataFromJSON.importance}`;
+        loadedImportanceBadge.textContent = `I: ${goalDataFromJSON.importance}`;
         loadedListItem.appendChild(loadedImportanceBadge);
+
+        // Add quick actions
+        let quickActions = document.createElement('div');
+        quickActions.classList.add('quick-actions');
+        let deleteBtn = document.createElement('button');
+        deleteBtn.classList.add('quick-action-btn');
+        deleteBtn.textContent = '🗑';
+        deleteBtn.addEventListener('click', function() {
+            loadedListItem.remove();
+            updateGoalCount();
+        });
+        quickActions.appendChild(deleteBtn);
+        loadedListItem.appendChild(quickActions);
 
         goalsList.appendChild(loadedListItem);
     
@@ -271,6 +287,7 @@ function buildListFromLocalStorage(goalsArray) {
 lookForGoalsOnPageLoad();
 function lookForGoalsOnPageLoad() {
     const goalsJSON = localStorage.getItem('goals');
+    console.log('Loading goals from localStorage:', goalsJSON);
     if (goalsJSON) {
         const goalsArray = JSON.parse(goalsJSON);
         buildListFromLocalStorage(goalsArray);
