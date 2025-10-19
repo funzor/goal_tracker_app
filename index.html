@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,19 +8,33 @@
     <script src="script.js" defer></script>
     <title>Goal Tracker App</title>
 </head>
+
 <body>
     <h1>Welcome to the Goal Tracker</h1>
     <div id="goals-progress-bar">
         <p id="progress-bar-text">Enter a goal below to get started</p>
         <input type="button" value="🗑️ All Goals" id="delete-all-goals-button">
-    </p>
+        </p>
     </div>
     <h4>Add a New Goal</h4>
     <div class="goal-input-container">
         <input type="text" id="new-goal-input">
+    </div>
+    <div>
+        Urgency:
+        <label for="highUrgency"> <input type="radio" id="highUrgency" name="urgency" value="High">High</input></label>
+        <label for="lowUrgency"><input type="radio" name="urgency" id="lowUrgency" value="Low">Low</input></label>
+
+        <br />
+        Importance: 
+        <label for="highImportance"><input type="radio" id="highImportance" name="importance" value="High">High</input></label>
+        <label for="lowImportance"><input type="radio" name="importance" id="lowImportance" value="Low">Low</input></label>
+
+    </div>
+    <div>
         <input type="button" value="Add Goal" id="add-goal-button">
     </div>
-    
+
     <h2>Goals</h2>
     <ol id="goals-list">
 
@@ -28,4 +43,5 @@
 
 
 </body>
+
 </html>
