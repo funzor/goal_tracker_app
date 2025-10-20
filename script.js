@@ -184,6 +184,7 @@ function getNewGoalText() {
     document.getElementById('new-goal-input').value = "";
     addGoalButton.disabled = true;
     updateGoalCount();
+    sortGoalsList();
     showGoalModal();
 }
 
@@ -191,7 +192,33 @@ function toggleGoalComplete() {
     let goalListItem = this.parentElement;
     goalListItem.classList.toggle('completed', this.checked)
     updateGoalCount();
+    sortGoalsList();
 };
+
+function sortGoalsList() {
+    const goalItems = Array.from(goalsList.children);
+    
+    goalItems.sort((a, b) => {
+        const aCompleted = a.classList.contains('completed');
+        const bCompleted = b.classList.contains('completed');
+        
+        if (aCompleted !== bCompleted) {
+            return aCompleted ? 1 : -1;
+        }
+        
+        const aUrg = a.dataset.urgency === 'High' ? 1 : 0;
+        const aImp = a.dataset.importance === 'High' ? 1 : 0;
+        const bUrg = b.dataset.urgency === 'High' ? 1 : 0;
+        const bImp = b.dataset.importance === 'High' ? 1 : 0;
+        
+        const aScore = aUrg * 2 + aImp;
+        const bScore = bUrg * 2 + bImp;
+        
+        return bScore - aScore;
+    });
+    
+    goalItems.forEach(item => goalsList.appendChild(item));
+}
 
 function setActiveView(view) {
     if (!goalsList || !goalsGridView) {
@@ -214,6 +241,7 @@ function setActiveView(view) {
     } else {
         goalsGridView.classList.add('is-hidden');
         goalsList.classList.remove('is-hidden');
+        sortGoalsList();
     }
 }
 
@@ -227,17 +255,34 @@ function renderGoalsGrid() {
         body.innerHTML = '';
     });
 
+    const completedGridSection = document.getElementById('completed-grid-section');
+    const completedGridBody = document.getElementById('completed-grid-body');
+    if (completedGridBody) {
+        completedGridBody.innerHTML = '';
+    }
+    
+    let hasCompletedGoals = false;
+
     Array.from(goalsList.children).forEach(goalItem => {
+        const isCompleted = goalItem.classList.contains('completed');
+        
+        if (isCompleted) {
+            hasCompletedGoals = true;
+        }
+        
         const importance = goalItem.dataset.importance || 'Low';
         const urgency = goalItem.dataset.urgency || 'Low';
-        const quadrant = goalsGridView.querySelector(`.grid-quadrant[data-importance="${importance}"][data-urgency="${urgency}"] .quadrant-body`);
-        if (!quadrant) {
+        
+        const targetContainer = isCompleted ? completedGridBody : 
+            goalsGridView.querySelector(`.grid-quadrant[data-importance="${importance}"][data-urgency="${urgency}"] .quadrant-body`);
+        
+        if (!targetContainer) {
             return;
         }
 
         const gridGoal = document.createElement('div');
         gridGoal.classList.add('grid-goal');
-        if (goalItem.classList.contains('completed')) {
+        if (isCompleted) {
             gridGoal.classList.add('completed');
         }
 
@@ -285,8 +330,16 @@ function renderGoalsGrid() {
             gridGoal.appendChild(quickActionsWrapper);
         }
 
-        quadrant.appendChild(gridGoal);
+        targetContainer.appendChild(gridGoal);
     });
+    
+    if (completedGridSection) {
+        if (hasCompletedGoals) {
+            completedGridSection.classList.remove('is-hidden');
+        } else {
+            completedGridSection.classList.add('is-hidden');
+        }
+    }
 }
     
 function updateGoalCount() {
@@ -430,6 +483,7 @@ function buildListFromLocalStorage(goalsArray) {
     
     }
     updateGoalCount();
+    sortGoalsList();
 }
 
 lookForGoalsOnPageLoad();
