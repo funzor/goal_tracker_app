@@ -6,7 +6,7 @@ const viewTabs = document.querySelectorAll('.view-tab');
 const goalsGridView = document.getElementById('goals-grid');
 const goalModal = document.getElementById('goal-modal');
 let goalModalTimeout = null;
-let currentView = 'grid';
+let currentView = 'list';
 
 if (newGoalInput) {
     newGoalInput.addEventListener('input', enableAddGoalButton);
@@ -43,8 +43,28 @@ matrixCells.forEach(cell => {
     });
 });
 
+function createPriorityDots(urgency, importance) {
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('priority-dots');
+
+    const urgencyDot = document.createElement('span');
+    urgencyDot.classList.add('priority-dot', 'priority-dot--urgency');
+    urgencyDot.dataset.level = urgency;
+    urgencyDot.title = `Urgency: ${urgency}`;
+    wrapper.appendChild(urgencyDot);
+
+    const importanceDot = document.createElement('span');
+    importanceDot.classList.add('priority-dot', 'priority-dot--importance');
+    importanceDot.dataset.level = importance;
+    importanceDot.title = `Importance: ${importance}`;
+    wrapper.appendChild(importanceDot);
+
+    return wrapper;
+}
+
 // -------- Color Theme System ----------//
 const colorThemes = {
+    slate: { primary: '#3B5B72', hover: '#314a5d', light: 'rgba(59, 91, 114, 0.12)', tag: 'rgba(59, 91, 114, 0.45)' },
     black: { primary: '#000', hover: '#333', light: 'rgba(0, 0, 0, 0.1)', tag: 'rgba(0, 0, 0, 0.5)' },
     blue: { primary: '#0066FF', hover: '#0052CC', light: 'rgba(0, 102, 255, 0.1)', tag: 'rgba(0, 102, 255, 0.5)' },
     orange: { primary: '#FF6B00', hover: '#CC5500', light: 'rgba(255, 107, 0, 0.1)', tag: 'rgba(255, 107, 0, 0.5)' },
@@ -54,16 +74,17 @@ const colorThemes = {
 };
 
 function setThemeColor(colorName) {
-    const theme = colorThemes[colorName];
+    const resolvedName = colorThemes[colorName] ? colorName : 'slate';
+    const theme = colorThemes[resolvedName];
     document.documentElement.style.setProperty('--accent-color', theme.primary);
     document.documentElement.style.setProperty('--accent-hover', theme.hover);
     document.documentElement.style.setProperty('--accent-light', theme.light);
     document.documentElement.style.setProperty('--accent-tag', theme.tag);
-    localStorage.setItem('themeColor', colorName);
+    localStorage.setItem('themeColor', resolvedName);
 }
 
 function loadThemeColor() {
-    const savedColor = localStorage.getItem('themeColor') || 'black';
+    const savedColor = localStorage.getItem('themeColor') || 'slate';
     setThemeColor(savedColor);
     
     // Update selected state in UI
@@ -126,62 +147,52 @@ function enableAddGoalButton(){
 }
 
 function getNewGoalText() {
-    newGoalText = document.getElementById("new-goal-input").value;
-    let createdListItem = document.createElement('li');
-    let newItemCheckbox = document.createElement('input');
+    const inputEl = document.getElementById("new-goal-input");
+    if (!inputEl) {
+        return;
+    }
+    newGoalText = inputEl.value.trim();
+    if (!newGoalText) {
+        return;
+    }
+
+    const createdListItem = document.createElement('li');
+    createdListItem.dataset.urgency = selectedUrgency;
+    createdListItem.dataset.importance = selectedImportance;
+
+    const priorityDots = createPriorityDots(selectedUrgency, selectedImportance);
+    createdListItem.appendChild(priorityDots);
+
+    const newItemCheckbox = document.createElement('input');
     newItemCheckbox.type = 'checkbox';
-    newItemCheckbox.addEventListener('change', toggleGoalComplete)
-    let goalTextSpan = document.createElement('span');
+    newItemCheckbox.addEventListener('change', toggleGoalComplete);
+    createdListItem.appendChild(newItemCheckbox);
+
+    const goalTextSpan = document.createElement('span');
     goalTextSpan.classList.add('goal-text');
     goalTextSpan.textContent = newGoalText;
-    let parentElementOfNewGoalText = document.getElementById('goals-list');   
-    parentElementOfNewGoalText.appendChild(createdListItem);
-    let parentElementOfNewListItem = createdListItem; 
-    
-    // Add category dot based on matrix quadrant
-    let categoryDot = document.createElement('span');
-    categoryDot.classList.add('category-dot');
-    categoryDot.dataset.urgency = selectedUrgency;
-    categoryDot.dataset.importance = selectedImportance;
-    createdListItem.appendChild(categoryDot);
-    
-    parentElementOfNewListItem.appendChild(newItemCheckbox);
     createdListItem.appendChild(goalTextSpan);
 
-    const badgeContainer = document.createElement('div');
-    badgeContainer.classList.add('goal-tags');
-
-    const urgencyBadge = document.createElement('span');
-    urgencyBadge.classList.add('urgency-badge');
-    urgencyBadge.dataset.level = selectedUrgency;
-    urgencyBadge.textContent = `Urg: ${selectedUrgency}`;
-    badgeContainer.appendChild(urgencyBadge);
-
-    const importanceBadge = document.createElement('span');
-    importanceBadge.classList.add('importance-badge');
-    importanceBadge.dataset.level = selectedImportance;
-    importanceBadge.textContent = `Imp: ${selectedImportance}`;
-    badgeContainer.appendChild(importanceBadge);
-
-    createdListItem.appendChild(badgeContainer);
-    
-    // Add quick actions
-    let quickActions = document.createElement('div');
+    const quickActions = document.createElement('div');
     quickActions.classList.add('quick-actions');
-    let deleteBtn = document.createElement('button');
+    const deleteBtn = document.createElement('button');
     deleteBtn.classList.add('quick-action-btn');
-    deleteBtn.textContent = '🗑';
+    deleteBtn.type = 'button';
+    deleteBtn.setAttribute('aria-label', 'Remove goal');
+    deleteBtn.textContent = '✕';
     deleteBtn.addEventListener('click', function() {
         createdListItem.remove();
         updateGoalCount();
     });
     quickActions.appendChild(deleteBtn);
     createdListItem.appendChild(quickActions);
-    
-    createdListItem.dataset.urgency = selectedUrgency;
-    createdListItem.dataset.importance = selectedImportance;
 
-    document.getElementById('new-goal-input').value = "";
+    const list = document.getElementById('goals-list');
+    if (list) {
+        list.appendChild(createdListItem);
+    }
+
+    inputEl.value = "";
     addGoalButton.disabled = true;
     updateGoalCount();
     sortGoalsList();
@@ -243,6 +254,10 @@ function setActiveView(view) {
         goalsList.classList.remove('is-hidden');
         sortGoalsList();
     }
+
+    if (goalsList) {
+        updateEmptyStateVisibility(goalsList.children.length);
+    }
 }
 
 function renderGoalsGrid() {
@@ -286,12 +301,6 @@ function renderGoalsGrid() {
             gridGoal.classList.add('completed');
         }
 
-        const sourceDot = goalItem.querySelector('.category-dot');
-        if (sourceDot) {
-            const dotClone = sourceDot.cloneNode(true);
-            gridGoal.appendChild(dotClone);
-        }
-
         const originalCheckbox = goalItem.querySelector('input[type="checkbox"]');
         const gridCheckbox = document.createElement('input');
         gridCheckbox.type = 'checkbox';
@@ -320,7 +329,7 @@ function renderGoalsGrid() {
             const deleteBtn = document.createElement('button');
             deleteBtn.type = 'button';
             deleteBtn.setAttribute('aria-label', 'Delete goal');
-            deleteBtn.textContent = '🗑';
+            deleteBtn.textContent = '✕';
             deleteBtn.addEventListener('click', () => {
                 deleteOriginal.click();
             });
@@ -355,8 +364,8 @@ function updateGoalCount() {
     
     // Update progress ring
     const circle = document.getElementById('progress-ring-circle');
-    const text = document.getElementById('progress-ring-text');
-    if (circle && text) {
+    const ring = document.getElementById('progress-ring');
+    if (circle) {
         const completedGoals = goalsList.querySelectorAll('.completed').length;
         const percentage = goalsCount > 0 ? (completedGoals / goalsCount) : 0;
         
@@ -365,21 +374,17 @@ function updateGoalCount() {
         const circumference = 2 * Math.PI * radius;
         const offset = circumference * (1 - percentage);
         
-        // Update circle and text
+        // Update circle
         circle.style.strokeDasharray = `${circumference} ${circumference}`;
         circle.style.strokeDashoffset = offset;
-        text.textContent = goalsCount > 0 ? completedGoals : '0';
+
+        if (ring) {
+            ring.setAttribute('aria-label', `${completedGoals} of ${goalsCount} goals completed`);
+        }
     }
     
     // Toggle empty state
-    const emptyState = document.getElementById('empty-state');
-    if (emptyState) {
-        if (goalsCount === 0) {
-            emptyState.classList.remove('hidden');
-        } else {
-            emptyState.classList.add('hidden');
-        }
-    }
+    updateEmptyStateVisibility(goalsCount);
     
     renderGoalsGrid();
     window.dispatchEvent(new CustomEvent('carousel:reposition'));
@@ -387,11 +392,21 @@ function updateGoalCount() {
     return goalsCount;
 };
 
+function updateEmptyStateVisibility(goalsCount) {
+    const emptyState = document.getElementById('empty-state');
+    if (!emptyState) {
+        return;
+    }
+    const shouldShow = goalsCount === 0 && currentView !== 'grid';
+    emptyState.classList.toggle('hidden', !shouldShow);
+}
+
 function calculateGoals(goalsCount) {  
     let completedGoals = goalsList.querySelectorAll('.completed').length;
     let displayElement = document.getElementById('progress-bar-text');
     if (displayElement) {
-        displayElement.textContent = `You've completed ${completedGoals} of ${goalsCount}  goals | ${Math.floor((completedGoals / goalsCount) * 100 )} %  `;
+        const percent = goalsCount > 0 ? Math.floor((completedGoals / goalsCount) * 100) : 0;
+        displayElement.textContent = `You've completed ${completedGoals} of ${goalsCount} goals | ${percent}%`;
     }
 };
 
@@ -424,22 +439,39 @@ function saveGoals() {
     return goalsListArray;
 }
 
+function hideGoalModal() {
+    if (!goalModal) {
+        return;
+    }
+    goalModal.classList.remove('is-visible');
+    if (goalModalTimeout) {
+        clearTimeout(goalModalTimeout);
+        goalModalTimeout = null;
+    }
+}
+
 function showGoalModal() {
     if (!goalModal) {
         return;
+    }
+    if (!goalModal.dataset.clickBound) {
+        goalModal.addEventListener('click', hideGoalModal);
+        goalModal.dataset.clickBound = 'true';
     }
     if (goalModalTimeout) {
         clearTimeout(goalModalTimeout);
     }
     goalModal.classList.add('is-visible');
     goalModalTimeout = setTimeout(() => {
-        goalModal.classList.remove('is-visible');
-    }, 2000);
+        hideGoalModal();
+    }, 1000);
 }
 
 function buildListFromLocalStorage(goalsArray) {
     for (const goalDataFromJSON of goalsArray) {
         const loadedListItem = document.createElement('li');
+        loadedListItem.dataset.importance = goalDataFromJSON.importance;
+        loadedListItem.dataset.urgency = goalDataFromJSON.urgency;
         const loadedItemCheckbox = document.createElement('input');
         loadedItemCheckbox.type = 'checkbox';
         loadedItemCheckbox.addEventListener('change', toggleGoalComplete);
@@ -451,38 +483,21 @@ function buildListFromLocalStorage(goalsArray) {
         let loadedListTextSpan = document.createElement('span');
         loadedListTextSpan.classList.add('goal-text');
         loadedListTextSpan.textContent = goalDataFromJSON.text;
-   
-        // Add category dot
-        let loadedCategoryDot = document.createElement('span');
-        loadedCategoryDot.classList.add('category-dot');
-        loadedCategoryDot.dataset.urgency = goalDataFromJSON.urgency;
-        loadedCategoryDot.dataset.importance = goalDataFromJSON.importance;
-        loadedListItem.appendChild(loadedCategoryDot);
+
+        const loadedPriorityDots = createPriorityDots(goalDataFromJSON.urgency, goalDataFromJSON.importance);
+        loadedListItem.appendChild(loadedPriorityDots);
 
         loadedListItem.appendChild(loadedItemCheckbox);
         loadedListItem.appendChild(loadedListTextSpan);
-        loadedListItem.dataset.importance = goalDataFromJSON.importance;
-        loadedListItem.dataset.urgency = goalDataFromJSON.urgency;
-        const loadedBadgeContainer = document.createElement('div');
-        loadedBadgeContainer.classList.add('goal-tags');
-        const loadedUrgencyBadge = document.createElement('span');
-        loadedUrgencyBadge.classList.add('urgency-badge');
-        loadedUrgencyBadge.dataset.level = goalDataFromJSON.urgency;
-        loadedUrgencyBadge.textContent = `Urg: ${goalDataFromJSON.urgency}`;
-        loadedBadgeContainer.appendChild(loadedUrgencyBadge);
-        const loadedImportanceBadge = document.createElement('span');
-        loadedImportanceBadge.classList.add('importance-badge');
-        loadedImportanceBadge.dataset.level = goalDataFromJSON.importance;
-        loadedImportanceBadge.textContent = `Imp: ${goalDataFromJSON.importance}`;
-        loadedBadgeContainer.appendChild(loadedImportanceBadge);
-        loadedListItem.appendChild(loadedBadgeContainer);
 
         // Add quick actions
         let quickActions = document.createElement('div');
         quickActions.classList.add('quick-actions');
         let deleteBtn = document.createElement('button');
         deleteBtn.classList.add('quick-action-btn');
-        deleteBtn.textContent = '🗑';
+        deleteBtn.type = 'button';
+        deleteBtn.setAttribute('aria-label', 'Remove goal');
+        deleteBtn.textContent = '✕';
         deleteBtn.addEventListener('click', function() {
             loadedListItem.remove();
             updateGoalCount();
