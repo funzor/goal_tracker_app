@@ -14,7 +14,13 @@
     <div class="top-bar app-block app-block--header">
         <h1 class="app-title">QuadGrid Goal Tracker</h1>
         <div class="top-bar-actions">
-            <span id="progress-indicator" class="progress-indicator">0/0</span>
+            <div class="progress-ring">
+                <svg width="32" height="32" viewBox="0 0 32 32">
+                    <circle class="progress-ring__circle-bg" cx="16" cy="16" r="14" />
+                    <circle class="progress-ring__circle" id="progress-ring-circle" cx="16" cy="16" r="14" />
+                    <text id="progress-ring-text" class="progress-ring__text" x="16" y="16" text-anchor="middle" dominant-baseline="central">0</text>
+                </svg>
+            </div>
             <button id="menu-button" class="menu-button">
                 <span class="menu-icon">☰</span>
             </button>

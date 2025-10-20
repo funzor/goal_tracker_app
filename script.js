@@ -353,11 +353,22 @@ function updateGoalCount() {
         badge.textContent = goalsCount;
     }
     
-    // Update progress indicator
-    const progressIndicator = document.getElementById('progress-indicator');
-    if (progressIndicator) {
+    // Update progress ring
+    const circle = document.getElementById('progress-ring-circle');
+    const text = document.getElementById('progress-ring-text');
+    if (circle && text) {
         const completedGoals = goalsList.querySelectorAll('.completed').length;
-        progressIndicator.textContent = `${completedGoals}/${goalsCount}`;
+        const percentage = goalsCount > 0 ? (completedGoals / goalsCount) : 0;
+        
+        // Calculate circle values
+        const radius = 14;
+        const circumference = 2 * Math.PI * radius;
+        const offset = circumference * (1 - percentage);
+        
+        // Update circle and text
+        circle.style.strokeDasharray = `${circumference} ${circumference}`;
+        circle.style.strokeDashoffset = offset;
+        text.textContent = goalsCount > 0 ? completedGoals : '0';
     }
     
     // Toggle empty state

@@ -346,11 +346,34 @@ body {
     gap: 16px;
 }
 
-.progress-indicator {
-    font-size: 13px;
+.progress-ring {
+    position: relative;
+    width: 32px;
+    height: 32px;
+}
+
+.progress-ring__circle-bg {
+    fill: none;
+    stroke: rgba(0, 0, 0, 0.08);
+    stroke-width: 2;
+}
+
+.progress-ring__circle {
+    fill: none;
+    stroke: var(--accent-color);
+    stroke-width: 2;
+    stroke-linecap: square;
+    transform: rotate(-90deg);
+    transform-origin: center;
+    transition: stroke-dashoffset 0.35s ease-out;
+}
+
+.progress-ring__text {
+    font-size: 11px;
     font-weight: 700;
-    color: #666;
-    letter-spacing: 0.5px;
+    fill: #666;
+    font-family: inherit;
+    letter-spacing: -0.3px;
 }
 
 .menu-button {
@@ -929,13 +952,51 @@ h2 {
     font-weight: 500;
 }
 
+@keyframes complete-line {
+    0% {
+        clip-path: polygon(0 50%, 0 50%, 0 50%);
+        opacity: 1;
+    }
+    30% {
+        clip-path: polygon(0 50%, 100% 50%, 100% 50%);
+        opacity: 1;
+    }
+    100% {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+        opacity: 0.3;
+    }
+}
+
 .completed {
+    position: relative;
     opacity: 0.3;
     border-left-color: #d0d0d0;
+    animation: complete-line 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .completed .goal-text {
-    text-decoration: line-through;
+    position: relative;
+}
+
+.completed .goal-text::before {
+    content: "";
+    position: absolute;
+    left: -2px;
+    right: -2px;
+    top: 50%;
+    height: 1px;
+    background: currentColor;
+    transform-origin: left;
+    animation: strike 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes strike {
+    0% {
+        transform: scaleX(0);
+    }
+    100% {
+        transform: scaleX(1);
+    }
 }
 
 input[type="checkbox"] {
@@ -1394,12 +1455,27 @@ input[type="checkbox"]:active {
 }
 
 .quadrant-body:empty::before {
-    content: "No goals yet.";
     font-size: 11px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+    letter-spacing: 0.5px;
     color: #c0c0c0;
-    font-weight: 700;
+    font-weight: 500;
+    font-style: italic;
+}
+
+.quadrant-focus .quadrant-body:empty::before {
+    content: "Long-term goals that matter most";
+}
+
+.quadrant-critical .quadrant-body:empty::before {
+    content: "Time-sensitive priorities";
+}
+
+.quadrant-someday .quadrant-body:empty::before {
+    content: "Nice-to-have ideas";
+}
+
+.quadrant-rush .quadrant-body:empty::before {
+    content: "Quick wins and urgent tasks";
 }
 
 .grid-goal {
