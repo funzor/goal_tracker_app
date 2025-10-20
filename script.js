@@ -476,6 +476,12 @@ function deleteAllGoals() {
     const totalSlides = slides.length;
     const swipeThreshold = 60;
 
+    const setActiveSlide = (index) => {
+        slides.forEach((slide, slideIndex) => {
+            slide.classList.toggle('is-active', slideIndex === index);
+        });
+    };
+
     if (totalSlides === 0) {
         return;
     }
@@ -541,6 +547,7 @@ function deleteAllGoals() {
         }
         dismissHint();
         activeIndex = ((targetIndex % totalSlides) + totalSlides) % totalSlides;
+        setActiveSlide(activeIndex);
         track.style.transition = TRANSITION_STYLE;
         applyTransform();
         windowEl.focus({ preventScroll: true });
@@ -660,4 +667,5 @@ function deleteAllGoals() {
     updateThumb();
     applyTransform();
     repositionArrows();
+    setActiveSlide(activeIndex);
 })();

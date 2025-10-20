@@ -25,13 +25,14 @@ body {
 /* Section Surfaces */
 .app-block {
     --block-accent-color: var(--accent-color);
+    --block-shadow: 12px 12px 0 rgba(17, 17, 17, 0.12);
     position: relative;
     margin-bottom: 36px;
     padding: 28px 32px;
     border: 2px solid #111;
     border-radius: 0;
     background: #fdfdfd;
-    box-shadow: 12px 12px 0 rgba(17, 17, 17, 0.12);
+    box-shadow: var(--block-shadow);
 }
 
 .app-block::before {
@@ -54,9 +55,9 @@ body {
 
 .app-block--header {
     --block-accent-color: #111;
+    --block-shadow: 10px 10px 0 rgba(17, 17, 17, 0.1);
     padding: 20px 24px;
     background: #f6f6f6;
-    box-shadow: 10px 10px 0 rgba(17, 17, 17, 0.1);
 }
 
 .app-block--header::after {
@@ -75,10 +76,10 @@ body {
 
 .app-block--goals {
     --block-accent-color: rgba(17, 17, 17, 1);
+    --block-shadow: 14px 14px 0 rgba(17, 17, 17, 0.12);
     padding: 32px 32px 36px;
     margin-bottom: 0;
     background: #fefefe;
-    box-shadow: 14px 14px 0 rgba(17, 17, 17, 0.12);
 }
 
 .app-block--goals::before {
@@ -156,6 +157,11 @@ body {
     flex: 0 0 100%;
     min-width: 100%;
     display: flex;
+    align-self: flex-start;
+}
+
+.carousel-slide:not(.is-active) > .app-block {
+    --block-shadow: none;
 }
 
 .carousel-slide > .app-block {
