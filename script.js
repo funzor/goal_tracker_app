@@ -472,6 +472,7 @@ function deleteAllGoals() {
     const nextButton = carouselRoot.querySelector('[data-carousel-next]');
     const thumb = carouselRoot.querySelector('[data-carousel-thumb]');
     const hint = carouselRoot.querySelector('[data-carousel-hint]');
+    const carouselLine = carouselRoot.querySelector('.carousel-line');
     const TRANSITION_STYLE = 'transform 0.35s cubic-bezier(0.33, 1, 0.68, 1)';
     const totalSlides = originalSlides.length;
     const hasLoop = totalSlides > 1;
@@ -516,6 +517,8 @@ function deleteAllGoals() {
         ? Array.from(track.querySelectorAll('[data-carousel-clone]'))
         : [];
 
+    const carouselLabels = carouselRoot.querySelectorAll('.carousel-label');
+
     const setActiveSlide = (index) => {
         originalSlides.forEach((slide, slideIndex) => {
             slide.classList.toggle('is-active', slideIndex === index);
@@ -526,6 +529,17 @@ function deleteAllGoals() {
                 clone.classList.toggle('is-active', sourceIndex === index);
             });
         }
+        
+        // Update label colors
+        carouselLabels.forEach((label, labelIndex) => {
+            if (labelIndex === index) {
+                label.style.color = 'var(--accent-color)';
+                label.style.fontWeight = '900';
+            } else {
+                label.style.color = '';
+                label.style.fontWeight = '';
+            }
+        });
     };
 
     if (totalSlides === 0) {
@@ -538,6 +552,7 @@ function deleteAllGoals() {
     let dragStartX = 0;
     let dragDeltaX = 0;
     let activePointerId = null;
+    let thumbDragging = false;
 
     const dismissHint = () => {
         if (hint && !hint.classList.contains('is-dismissed')) {
@@ -579,7 +594,7 @@ function deleteAllGoals() {
         const segment = 100 / totalSlides;
         const offsetX = segment * activeIndex;
         thumb.style.width = `${segment}%`;
-        thumb.style.transform = `translate(${offsetX}%, -50%)`;
+        thumb.style.left = `${offsetX}%`;
     };
 
     const getVisualIndexForActive = () => activeIndex + cloneOffset;
@@ -837,6 +852,56 @@ function deleteAllGoals() {
             event.preventDefault();
             goToIndex(activeIndex + 1);
         }
+    });
+
+    // Slider thumb dragging and clicking
+    if (thumb && carouselLine) {
+        const handleThumbDrag = (event) => {
+            if (!thumbDragging) return;
+            
+            const lineRect = carouselLine.getBoundingClientRect();
+            const clientX = event.clientX || (event.touches && event.touches[0] && event.touches[0].clientX);
+            if (!clientX) return;
+            
+            const offsetX = clientX - lineRect.left;
+            const percentage = Math.max(0, Math.min(1, offsetX / lineRect.width));
+            const targetIndex = Math.round(percentage * (totalSlides - 1));
+            
+            goToIndex(targetIndex);
+        };
+
+        const handleThumbStart = (event) => {
+            thumbDragging = true;
+            handleThumbDrag(event);
+            event.preventDefault();
+        };
+
+        const handleThumbEnd = () => {
+            thumbDragging = false;
+        };
+
+        thumb.addEventListener('pointerdown', handleThumbStart);
+        thumb.addEventListener('touchstart', handleThumbStart, { passive: false });
+        
+        carouselLine.addEventListener('pointerdown', handleThumbStart);
+        carouselLine.addEventListener('touchstart', handleThumbStart, { passive: false });
+        
+        document.addEventListener('pointermove', handleThumbDrag);
+        document.addEventListener('touchmove', handleThumbDrag, { passive: false });
+        
+        document.addEventListener('pointerup', handleThumbEnd);
+        document.addEventListener('touchend', handleThumbEnd);
+        
+        thumb.style.cursor = 'grab';
+        carouselLine.style.cursor = 'pointer';
+    }
+
+    // Make carousel labels clickable
+    carouselLabels.forEach((label, index) => {
+        label.style.cursor = 'pointer';
+        label.addEventListener('click', () => {
+            goToIndex(index);
+        });
     });
 
     const observer = typeof ResizeObserver !== 'undefined'
