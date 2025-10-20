@@ -223,13 +223,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid #111;
+    border: 0.5px solid #a7a7a7;
     background: rgba(255, 255, 255, 0.92);
     color: #111;
     font-size: 18px;
     font-weight: 800;
     border-radius: 0;
-    box-shadow: 6px 6px 0 rgba(17, 17, 17, 0.15);
+    /* box-shadow: 6px 6px 0 rgba(17, 17, 17, 0.15); */
     cursor: pointer;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
@@ -750,6 +750,7 @@ h2 {
     padding: 2px 8px;
     border-radius: 0;
     letter-spacing: 0;
+    display:none;
 }
 
 #goals-list {
@@ -973,9 +974,111 @@ input[type="checkbox"]:active {
     transform: scale(0.9);
 }
 
+/* Priority Bubble Selector */
+.priority-selector {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin: 8px 0 12px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    white-space: nowrap;
+}
+
+.priority-selector::-webkit-scrollbar {
+    height: 4px;
+}
+
+.priority-selector::-webkit-scrollbar-thumb {
+    background: rgba(17, 24, 39, 0.16);
+}
+
+.priority-group {
+    border: none;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-width: max-content;
+    padding-right: 18px;
+    margin-right: 18px;
+    border-right: 1px solid rgba(17, 24, 39, 0.18);
+}
+
+.priority-group:last-of-type {
+    border-right: none;
+    margin-right: 0;
+    padding-right: 0;
+}
+
+.priority-group__label {
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #111;
+    padding: 0;
+}
+
+.priority-options {
+    display: flex;
+    gap: 10px;
+}
+
+.priority-option {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.priority-option input {
+    /* ensure focus outline can be drawn on chip */
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 1px;
+    height: 1px;
+}
+
+.priority-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: auto;
+    padding: 7px 12px 5px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: rgba(17, 17, 17, 0.68);
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: color 0.15s ease, border-color 0.15s ease;
+    line-height: 1;
+}
+
+.priority-option input:not(:checked) + .priority-chip:hover {
+    color: var(--accent-color);
+    border-bottom-color: rgba(17, 24, 39, 0.18);
+}
+
+.priority-option input:checked + .priority-chip {
+    border-bottom-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+.priority-option input:focus-visible + .priority-chip {
+    outline: 1px dotted var(--accent-color);
+    outline-offset: 2px;
+}
+
 /* Matrix Quadrant Selector */
 .matrix-container {
-    margin: 32px auto;
+    margin: 14px auto 4px;
     display: flex;
     justify-content: center;
 }
@@ -984,7 +1087,7 @@ input[type="checkbox"]:active {
     display: inline-grid;
     grid-template-columns: auto 1fr;
     grid-template-rows: 1fr auto;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
     max-width: 100%;
 }
@@ -1035,8 +1138,8 @@ input[type="checkbox"]:active {
     gap: 6px;
     background: transparent;
     border: none;
-    width: clamp(220px, 48vw, 320px);
-    height: clamp(220px, 48vw, 320px);
+    width: clamp(190px, 38vw, 260px);
+    height: clamp(190px, 38vw, 260px);
     transition: width 0.2s ease, height 0.2s ease;
 }
 
@@ -1059,8 +1162,17 @@ input[type="checkbox"]:active {
         gap: 24px;
     }
 
+    .priority-selector {
+        gap: 16px;
+    }
+
+    .priority-group {
+        padding-right: 12px;
+        margin-right: 12px;
+    }
+
     .matrix-container {
-        margin: 20px auto 12px;
+        margin: 12px auto 6px;
     }
 
     .matrix-wrapper {
@@ -1068,8 +1180,8 @@ input[type="checkbox"]:active {
     }
 
     .matrix-grid {
-        width: clamp(180px, 72vw, 240px);
-        height: clamp(180px, 72vw, 240px);
+        width: clamp(160px, 60vw, 210px);
+        height: clamp(160px, 60vw, 210px);
     }
 
     /* Welcome Screen Mobile */
@@ -1121,7 +1233,7 @@ input[type="checkbox"]:active {
 
 @media (max-width: 480px) {
     .matrix-container {
-        margin: 16px auto 8px;
+        margin: 10px auto 4px;
     }
 
     .matrix-wrapper {
@@ -1129,8 +1241,8 @@ input[type="checkbox"]:active {
     }
 
     .matrix-grid {
-        width: clamp(150px, 65vw, 190px);
-        height: clamp(150px, 65vw, 190px);
+        width: clamp(140px, 58vw, 180px);
+        height: clamp(140px, 58vw, 180px);
     }
 
     .matrix-text {
@@ -1138,7 +1250,7 @@ input[type="checkbox"]:active {
     }
 
     .matrix-primary {
-        font-size: 13px;
+        font-size: 12px;
     }
 
     .matrix-tag {
@@ -1161,7 +1273,7 @@ input[type="checkbox"]:active {
     position: relative;
     overflow: hidden;
     background: transparent;
-    border: 1px solid rgba(17, 24, 39, 0.16);
+    border: 1px solid rgba(17, 24, 39, 0.12);
 }
 
 .matrix-cell::before {
@@ -1178,7 +1290,7 @@ input[type="checkbox"]:active {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     text-align: center;
     user-select: none;
     position: relative;
@@ -1186,11 +1298,11 @@ input[type="checkbox"]:active {
 }
 
 .matrix-primary {
-    font-size: 16px;
-    font-weight: 800;
+    /* font-size: 16px; */
+    font-weight: 600;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    color: #1f1f1f;
+    color: #4b4f55;
     display: inline-block;
 }
 
@@ -1222,7 +1334,7 @@ input[type="checkbox"]:active {
 }
 
 .matrix-high-high .matrix-primary {
-    color: #1f1f1f;
+    color: #4b4f55;
 }
 
 .matrix-high-high .matrix-tag--low {
@@ -1253,11 +1365,11 @@ input[type="checkbox"]:active {
 }
 
 .matrix-cell.selected::before {
-    opacity: 0.14;
+    opacity: 0.12;
 }
 
 .matrix-cell.selected.matrix-high-high::before {
-    opacity: 0.22;
+    opacity: 0.18;
 }
 
 /* Color Options in Menu */

@@ -6,7 +6,7 @@ const viewTabs = document.querySelectorAll('.view-tab');
 const goalsGridView = document.getElementById('goals-grid');
 const goalModal = document.getElementById('goal-modal');
 let goalModalTimeout = null;
-let currentView = 'list';
+let currentView = 'grid';
 
 if (newGoalInput) {
     newGoalInput.addEventListener('input', enableAddGoalButton);
@@ -27,21 +27,82 @@ viewTabs.forEach(tab => {
 
 let selectedImportance = 'Low';
 let selectedUrgency = 'Low';
+let isUpdatingPriority = false;
 
 // -------- Matrix Quadrant Selector ----------//
 const matrixCells = document.querySelectorAll('.matrix-cell');
+const importanceRadios = document.querySelectorAll('input[name="importance-level"]');
+const urgencyRadios = document.querySelectorAll('input[name="urgency-level"]');
+
+function updatePrioritySelection({ urgency, importance }) {
+    if (!urgency || !importance) {
+        return;
+    }
+
+    if (isUpdatingPriority) {
+        return;
+    }
+
+    isUpdatingPriority = true;
+    selectedUrgency = urgency;
+    selectedImportance = importance;
+
+    matrixCells.forEach(cell => {
+        const matches = cell.dataset.urgency === urgency && cell.dataset.importance === importance;
+        cell.classList.toggle('selected', matches);
+    });
+
+    importanceRadios.forEach(radio => {
+        radio.checked = radio.value === importance;
+    });
+
+    urgencyRadios.forEach(radio => {
+        radio.checked = radio.value === urgency;
+    });
+
+    isUpdatingPriority = false;
+}
 
 matrixCells.forEach(cell => {
-    cell.addEventListener('click', function() {
-        // Remove selected from all cells
-        matrixCells.forEach(c => c.classList.remove('selected'));
-        // Add selected to clicked cell
-        this.classList.add('selected');
-        // Store the values
-        selectedUrgency = this.dataset.urgency;
-        selectedImportance = this.dataset.importance;
+    cell.addEventListener('click', () => {
+        updatePrioritySelection({
+            urgency: cell.dataset.urgency || 'Low',
+            importance: cell.dataset.importance || 'Low'
+        });
     });
 });
+
+importanceRadios.forEach(radio => {
+    radio.addEventListener('change', () => {
+        if (!radio.checked) {
+            return;
+        }
+        updatePrioritySelection({
+            urgency: selectedUrgency,
+            importance: radio.value
+        });
+    });
+});
+
+urgencyRadios.forEach(radio => {
+    radio.addEventListener('change', () => {
+        if (!radio.checked) {
+            return;
+        }
+        updatePrioritySelection({
+            urgency: radio.value,
+            importance: selectedImportance
+        });
+    });
+});
+
+const initialMatrixCell = document.querySelector('.matrix-cell.selected') || matrixCells[0];
+if (initialMatrixCell) {
+    updatePrioritySelection({
+        urgency: initialMatrixCell.dataset.urgency || 'Low',
+        importance: initialMatrixCell.dataset.importance || 'Low'
+    });
+}
 
 function createPriorityDots(urgency, importance) {
     const wrapper = document.createElement('div');
@@ -581,6 +642,17 @@ function deleteAllGoals() {
         });
         clone.querySelectorAll('a, button, input, select, textarea, [tabindex]').forEach(node => {
             node.setAttribute('tabindex', '-1');
+        });
+        clone.querySelectorAll('input[name]').forEach(input => {
+            const name = input.getAttribute('name');
+            if (!name) {
+                return;
+            }
+            input.setAttribute('data-clone-original-name', name);
+            input.setAttribute('name', `${name}__clone-${sourceIndex}`);
+            if (input.type === 'radio') {
+                input.checked = input.defaultChecked;
+            }
         });
     };
 

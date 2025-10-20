@@ -78,11 +78,39 @@
                         <div class="goal-input-container" data-arrow-anchor>
                             <div class="input-section step" data-step="1">
                                 <label class="step-label" for="new-goal-input">Goal</label>
-                                <input type="text" id="new-goal-input" placeholder="Describe what you want to move forward">
+                                <input type="text" id="new-goal-input" placeholder="enter a goal or task">
                             </div>
                             
                             <div class="matrix-section step" data-step="2">
                                 <label class="step-label">Priority</label>
+                                <div class="priority-selector" data-carousel-static>
+                                    <fieldset class="priority-group" aria-label="Importance level">
+                                        <legend class="priority-group__label">Importance</legend>
+                                        <div class="priority-options">
+                                            <label class="priority-option">
+                                                <input type="radio" name="importance-level" value="Low" checked>
+                                                <span class="priority-chip">Low</span>
+                                            </label>
+                                            <label class="priority-option">
+                                                <input type="radio" name="importance-level" value="High">
+                                                <span class="priority-chip">High</span>
+                                            </label>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset class="priority-group" aria-label="Urgency level">
+                                        <legend class="priority-group__label">Urgency</legend>
+                                        <div class="priority-options">
+                                            <label class="priority-option">
+                                                <input type="radio" name="urgency-level" value="Low" checked>
+                                                <span class="priority-chip">Low</span>
+                                            </label>
+                                            <label class="priority-option">
+                                                <input type="radio" name="urgency-level" value="High">
+                                                <span class="priority-chip">High</span>
+                                            </label>
+                                        </div>
+                                    </fieldset>
+                                </div>
                                 <div class="matrix-container" data-carousel-static>
                                     <div class="matrix-wrapper">
                                         <div class="matrix-axis-y">
@@ -135,11 +163,11 @@
                 <section class="carousel-slide" data-carousel-panel="review">
                     <div class="app-block app-block--goals">
                         <nav class="view-tabs" role="tablist">
-                            <button class="view-tab active" type="button" role="tab" aria-selected="true" data-view="list">
-                                List View
-                            </button>
-                            <button class="view-tab" type="button" role="tab" aria-selected="false" data-view="grid">
+                            <button class="view-tab active" type="button" role="tab" aria-selected="true" data-view="grid">
                                 Matrix View
+                            </button>
+                            <button class="view-tab" type="button" role="tab" aria-selected="false" data-view="list">
+                                List View
                             </button>
                         </nav>
 
