@@ -1009,7 +1009,7 @@ input[type="checkbox"]:active {
 }
 
 .axis-label {
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 800;
     color: #666;
     letter-spacing: 1.5px;
@@ -1147,7 +1147,7 @@ input[type="checkbox"]:active {
     }
 
     .axis-label {
-        font-size: 8px;
+        font-size: 10px;
         letter-spacing: 1.2px;
     }
 }
@@ -1221,19 +1221,18 @@ input[type="checkbox"]:active {
     border-color: rgba(0, 0, 0, 0.05);
 }
 
-.matrix-high-high .matrix-primary,
+.matrix-high-high .matrix-primary {
+    color: #1f1f1f;
+}
+
 .matrix-high-high .matrix-tag--low {
-    color: #fff;
+    color: #4a4a4a;
 }
 
 .matrix-high-high .matrix-tag--high {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--accent-color);
     color: #fff;
-    border-color: rgba(255, 255, 255, 0.25);
-}
-
-.matrix-high-high .matrix-tag {
-    border-color: rgba(255, 255, 255, 0.25);
+    border-color: rgba(0, 0, 0, 0.1);
 }
 
 .matrix-low-high .matrix-primary {
