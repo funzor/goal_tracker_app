@@ -1,12 +1,11 @@
 let newGoalText = '';
-let addGoalButton = document.getElementById("add-goal-button")
-let goalsList = document.getElementById('goals-list');
-let newGoalInput = document.getElementById('new-goal-input');
-const newGoalToggle = document.getElementById('new-goal-toggle');
-const newGoalContent = document.getElementById('new-goal-content');
+const addGoalButton = document.getElementById('add-goal-button');
+const goalsList = document.getElementById('goals-list');
+const newGoalInput = document.getElementById('new-goal-input');
 const viewTabs = document.querySelectorAll('.view-tab');
 const goalsGridView = document.getElementById('goals-grid');
-let previousGoalsCount = 0;
+const goalModal = document.getElementById('goal-modal');
+let goalModalTimeout = null;
 let currentView = 'grid';
 
 if (newGoalInput) {
@@ -15,19 +14,6 @@ if (newGoalInput) {
 
 if (addGoalButton) {
     addGoalButton.addEventListener('click', getNewGoalText);
-}
-
-if (newGoalToggle) {
-    newGoalToggle.addEventListener('click', () => {
-        if (!newGoalContent) {
-            return;
-        }
-        const shouldExpand = !newGoalContent.classList.contains('expanded');
-        setNewGoalSectionState(shouldExpand);
-        if (shouldExpand && newGoalInput) {
-            newGoalInput.focus();
-        }
-    });
 }
 
 viewTabs.forEach(tab => {
@@ -59,12 +45,12 @@ matrixCells.forEach(cell => {
 
 // -------- Color Theme System ----------//
 const colorThemes = {
-    black: { primary: '#000', hover: '#333', light: 'rgba(0, 0, 0, 0.1)' },
-    blue: { primary: '#0066FF', hover: '#0052CC', light: 'rgba(0, 102, 255, 0.1)' },
-    orange: { primary: '#FF6B00', hover: '#CC5500', light: 'rgba(255, 107, 0, 0.1)' },
-    green: { primary: '#00C853', hover: '#00A142', light: 'rgba(0, 200, 83, 0.1)' },
-    pink: { primary: '#FF006E', hover: '#CC0058', light: 'rgba(255, 0, 110, 0.1)' },
-    purple: { primary: '#7C3AED', hover: '#6328E0', light: 'rgba(124, 58, 237, 0.1)' }
+    black: { primary: '#000', hover: '#333', light: 'rgba(0, 0, 0, 0.1)', tag: 'rgba(0, 0, 0, 0.5)' },
+    blue: { primary: '#0066FF', hover: '#0052CC', light: 'rgba(0, 102, 255, 0.1)', tag: 'rgba(0, 102, 255, 0.5)' },
+    orange: { primary: '#FF6B00', hover: '#CC5500', light: 'rgba(255, 107, 0, 0.1)', tag: 'rgba(255, 107, 0, 0.5)' },
+    green: { primary: '#00C853', hover: '#00A142', light: 'rgba(0, 200, 83, 0.1)', tag: 'rgba(0, 200, 83, 0.5)' },
+    pink: { primary: '#FF006E', hover: '#CC0058', light: 'rgba(255, 0, 110, 0.1)', tag: 'rgba(255, 0, 110, 0.5)' },
+    purple: { primary: '#7C3AED', hover: '#6328E0', light: 'rgba(124, 58, 237, 0.1)', tag: 'rgba(124, 58, 237, 0.5)' }
 };
 
 function setThemeColor(colorName) {
@@ -72,6 +58,7 @@ function setThemeColor(colorName) {
     document.documentElement.style.setProperty('--accent-color', theme.primary);
     document.documentElement.style.setProperty('--accent-hover', theme.hover);
     document.documentElement.style.setProperty('--accent-light', theme.light);
+    document.documentElement.style.setProperty('--accent-tag', theme.tag);
     localStorage.setItem('themeColor', colorName);
 }
 
@@ -160,14 +147,23 @@ function getNewGoalText() {
     
     parentElementOfNewListItem.appendChild(newItemCheckbox);
     createdListItem.appendChild(goalTextSpan);
-    let urgencyBadge = document.createElement('span')
-    urgencyBadge.classList.add('urgency-badge')
-    urgencyBadge.textContent = `Urgency: ${selectedUrgency}`;
-    createdListItem.appendChild(urgencyBadge);
-    let importanceBadge = document.createElement('span')
-    importanceBadge.classList.add('importance-badge')
-    importanceBadge.textContent = `I: ${selectedImportance}`;
-    createdListItem.appendChild(importanceBadge);
+
+    const badgeContainer = document.createElement('div');
+    badgeContainer.classList.add('goal-tags');
+
+    const urgencyBadge = document.createElement('span');
+    urgencyBadge.classList.add('urgency-badge');
+    urgencyBadge.dataset.level = selectedUrgency;
+    urgencyBadge.textContent = `Urg: ${selectedUrgency}`;
+    badgeContainer.appendChild(urgencyBadge);
+
+    const importanceBadge = document.createElement('span');
+    importanceBadge.classList.add('importance-badge');
+    importanceBadge.dataset.level = selectedImportance;
+    importanceBadge.textContent = `Imp: ${selectedImportance}`;
+    badgeContainer.appendChild(importanceBadge);
+
+    createdListItem.appendChild(badgeContainer);
     
     // Add quick actions
     let quickActions = document.createElement('div');
@@ -186,8 +182,9 @@ function getNewGoalText() {
     createdListItem.dataset.importance = selectedImportance;
 
     document.getElementById('new-goal-input').value = "";
-    addGoalButton.disabled = true;      
+    addGoalButton.disabled = true;
     updateGoalCount();
+    showGoalModal();
 }
 
 function toggleGoalComplete() {
@@ -195,38 +192,6 @@ function toggleGoalComplete() {
     goalListItem.classList.toggle('completed', this.checked)
     updateGoalCount();
 };
-
-function setNewGoalSectionState(expanded) {
-    if (!newGoalContent || !newGoalToggle) {
-        return;
-    }
-
-    if (expanded) {
-        newGoalContent.classList.add('expanded');
-        newGoalToggle.setAttribute('aria-expanded', 'true');
-    } else {
-        newGoalContent.classList.remove('expanded');
-        newGoalToggle.setAttribute('aria-expanded', 'false');
-        if (newGoalInput) {
-            newGoalInput.blur();
-        }
-    }
-}
-
-function syncNewGoalSectionVisibility(goalsCount) {
-    if (!newGoalContent || !newGoalToggle) {
-        previousGoalsCount = goalsCount;
-        return;
-    }
-
-    if (goalsCount === 0) {
-        setNewGoalSectionState(true);
-    } else if (previousGoalsCount === 0 && goalsCount > 0) {
-        setNewGoalSectionState(false);
-    }
-
-    previousGoalsCount = goalsCount;
-}
 
 function setActiveView(view) {
     if (!goalsList || !goalsGridView) {
@@ -352,8 +317,8 @@ function updateGoalCount() {
         }
     }
     
-    syncNewGoalSectionVisibility(goalsCount);
     renderGoalsGrid();
+    window.dispatchEvent(new CustomEvent('carousel:reposition'));
 
     return goalsCount;
 };
@@ -395,6 +360,19 @@ function saveGoals() {
     return goalsListArray;
 }
 
+function showGoalModal() {
+    if (!goalModal) {
+        return;
+    }
+    if (goalModalTimeout) {
+        clearTimeout(goalModalTimeout);
+    }
+    goalModal.classList.add('is-visible');
+    goalModalTimeout = setTimeout(() => {
+        goalModal.classList.remove('is-visible');
+    }, 2000);
+}
+
 function buildListFromLocalStorage(goalsArray) {
     for (const goalDataFromJSON of goalsArray) {
         const loadedListItem = document.createElement('li');
@@ -421,14 +399,19 @@ function buildListFromLocalStorage(goalsArray) {
         loadedListItem.appendChild(loadedListTextSpan);
         loadedListItem.dataset.importance = goalDataFromJSON.importance;
         loadedListItem.dataset.urgency = goalDataFromJSON.urgency;
-        let loadedUrgencyBadge = document.createElement('span');
+        const loadedBadgeContainer = document.createElement('div');
+        loadedBadgeContainer.classList.add('goal-tags');
+        const loadedUrgencyBadge = document.createElement('span');
         loadedUrgencyBadge.classList.add('urgency-badge');
-        loadedUrgencyBadge.textContent = `Urgency: ${goalDataFromJSON.urgency}`;
-        loadedListItem.appendChild(loadedUrgencyBadge);
-        let loadedImportanceBadge = document.createElement('span');
+        loadedUrgencyBadge.dataset.level = goalDataFromJSON.urgency;
+        loadedUrgencyBadge.textContent = `Urg: ${goalDataFromJSON.urgency}`;
+        loadedBadgeContainer.appendChild(loadedUrgencyBadge);
+        const loadedImportanceBadge = document.createElement('span');
         loadedImportanceBadge.classList.add('importance-badge');
-        loadedImportanceBadge.textContent = `I: ${goalDataFromJSON.importance}`;
-        loadedListItem.appendChild(loadedImportanceBadge);
+        loadedImportanceBadge.dataset.level = goalDataFromJSON.importance;
+        loadedImportanceBadge.textContent = `Imp: ${goalDataFromJSON.importance}`;
+        loadedBadgeContainer.appendChild(loadedImportanceBadge);
+        loadedListItem.appendChild(loadedBadgeContainer);
 
         // Add quick actions
         let quickActions = document.createElement('div');
@@ -474,3 +457,207 @@ function deleteAllGoals() {
 // -------- DOT MENU FUNCTIONS ----------//
  
 // -------- Delete single item ----------//
+
+// -------- Carousel Controller ----------//
+(function () {
+    const carouselRoot = document.querySelector('[data-carousel]');
+    if (!carouselRoot) {
+        return;
+    }
+
+    const windowEl = carouselRoot.querySelector('[data-carousel-window]');
+    const track = carouselRoot.querySelector('[data-carousel-track]');
+    const slides = Array.from(track.querySelectorAll('.carousel-slide'));
+    const prevButton = carouselRoot.querySelector('[data-carousel-prev]');
+    const nextButton = carouselRoot.querySelector('[data-carousel-next]');
+    const thumb = carouselRoot.querySelector('[data-carousel-thumb]');
+    const hint = carouselRoot.querySelector('[data-carousel-hint]');
+    const TRANSITION_STYLE = 'transform 0.35s cubic-bezier(0.33, 1, 0.68, 1)';
+    const totalSlides = slides.length;
+    const swipeThreshold = 60;
+
+    if (totalSlides === 0) {
+        return;
+    }
+
+    let activeIndex = 0;
+    let slideWidth = windowEl.offsetWidth;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragDeltaX = 0;
+
+    const dismissHint = () => {
+        if (hint && !hint.classList.contains('is-dismissed')) {
+            hint.classList.add('is-dismissed');
+        }
+    };
+
+    const computeAnchorOffset = () => {
+        const windowRect = windowEl.getBoundingClientRect();
+        const activeSlide = slides[activeIndex];
+        if (!activeSlide) {
+            return windowRect.height / 2;
+        }
+        const anchorEl = activeSlide.querySelector('[data-arrow-anchor]');
+        if (!anchorEl) {
+            return windowRect.height / 2;
+        }
+        const anchorRect = anchorEl.getBoundingClientRect();
+        const offset = anchorRect.top + anchorRect.height / 2 - windowRect.top;
+        return Math.min(Math.max(offset, 0), windowRect.height);
+    };
+
+    const repositionArrows = () => {
+        if (!prevButton || !nextButton) {
+            return;
+        }
+        requestAnimationFrame(() => {
+            const offset = computeAnchorOffset();
+            const formatted = `${offset}px`;
+            prevButton.style.top = formatted;
+            nextButton.style.top = formatted;
+        });
+    };
+
+    const updateThumb = () => {
+        if (!thumb) {
+            return;
+        }
+        const segment = 100 / totalSlides;
+        thumb.style.width = `${segment}%`;
+        thumb.style.transform = `translateX(${segment * activeIndex}%)`;
+    };
+
+    const applyTransform = () => {
+        track.style.transition = TRANSITION_STYLE;
+        track.style.transform = `translateX(-${slideWidth * activeIndex}px)`;
+        updateThumb();
+        repositionArrows();
+    };
+
+    const goToIndex = (targetIndex) => {
+        if (totalSlides <= 1) {
+            return;
+        }
+        dismissHint();
+        activeIndex = ((targetIndex % totalSlides) + totalSlides) % totalSlides;
+        track.style.transition = TRANSITION_STYLE;
+        applyTransform();
+        windowEl.focus({ preventScroll: true });
+    };
+
+    const handleResize = () => {
+        slideWidth = windowEl.offsetWidth;
+        track.style.transition = 'none';
+        track.style.transform = `translateX(-${slideWidth * activeIndex}px)`;
+        updateThumb();
+        repositionArrows();
+        requestAnimationFrame(() => {
+            track.style.transition = TRANSITION_STYLE;
+        });
+    };
+
+    const interactiveSelector = 'button, input, textarea, select, a, label, [data-carousel-static]';
+
+    const handlePointerDown = (event) => {
+        if (event.pointerType === 'mouse' && event.button !== 0) {
+            return;
+        }
+        const interactiveTarget = event.target.closest(interactiveSelector);
+        if (interactiveTarget) {
+            return;
+        }
+        isDragging = true;
+        dragStartX = event.clientX;
+        dragDeltaX = 0;
+        try {
+            windowEl.setPointerCapture(event.pointerId);
+        } catch (err) {
+            // Some browsers may reject capture on non-primary pointers; ignore.
+        }
+        windowEl.classList.add('is-dragging');
+        track.style.transition = 'none';
+        dismissHint();
+    };
+
+    const handlePointerMove = (event) => {
+        if (!isDragging) {
+            return;
+        }
+        dragDeltaX = event.clientX - dragStartX;
+        track.style.transform = `translateX(${ -activeIndex * slideWidth + dragDeltaX }px)`;
+    };
+
+    const settleToActive = () => {
+        track.style.transition = TRANSITION_STYLE;
+        applyTransform();
+    };
+
+    const handlePointerEnd = (event) => {
+        if (!isDragging) {
+            return;
+        }
+        try {
+            windowEl.releasePointerCapture(event.pointerId);
+        } catch (err) {
+            // Pointer capture might already be released; ignore errors.
+        }
+        dismissHint();
+        windowEl.classList.remove('is-dragging');
+        isDragging = false;
+        const traveled = Math.abs(dragDeltaX);
+        if (traveled > swipeThreshold) {
+            if (dragDeltaX < 0) {
+                goToIndex(activeIndex + 1);
+            } else {
+                goToIndex(activeIndex - 1);
+            }
+        } else {
+            settleToActive();
+        }
+        dragDeltaX = 0;
+    };
+
+    windowEl.addEventListener('pointerdown', handlePointerDown);
+    windowEl.addEventListener('pointermove', handlePointerMove);
+    windowEl.addEventListener('pointerup', handlePointerEnd);
+    windowEl.addEventListener('pointercancel', handlePointerEnd);
+
+    if (prevButton) {
+        prevButton.addEventListener('click', () => {
+            goToIndex(activeIndex - 1);
+        });
+    }
+
+    if (nextButton) {
+        nextButton.addEventListener('click', () => {
+            goToIndex(activeIndex + 1);
+        });
+    }
+
+    windowEl.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            goToIndex(activeIndex - 1);
+        } else if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            goToIndex(activeIndex + 1);
+        }
+    });
+
+    const observer = typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(handleResize)
+        : null;
+
+    if (observer) {
+        observer.observe(windowEl);
+    } else {
+        window.addEventListener('resize', handleResize);
+    }
+
+    window.addEventListener('carousel:reposition', repositionArrows);
+
+    updateThumb();
+    applyTransform();
+    repositionArrows();
+})();
