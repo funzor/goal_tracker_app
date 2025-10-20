@@ -467,19 +467,65 @@ function deleteAllGoals() {
 
     const windowEl = carouselRoot.querySelector('[data-carousel-window]');
     const track = carouselRoot.querySelector('[data-carousel-track]');
-    const slides = Array.from(track.querySelectorAll('.carousel-slide'));
+    const originalSlides = Array.from(track.querySelectorAll('.carousel-slide'));
     const prevButton = carouselRoot.querySelector('[data-carousel-prev]');
     const nextButton = carouselRoot.querySelector('[data-carousel-next]');
     const thumb = carouselRoot.querySelector('[data-carousel-thumb]');
     const hint = carouselRoot.querySelector('[data-carousel-hint]');
     const TRANSITION_STYLE = 'transform 0.35s cubic-bezier(0.33, 1, 0.68, 1)';
-    const totalSlides = slides.length;
+    const totalSlides = originalSlides.length;
+    const hasLoop = totalSlides > 1;
+    const cloneOffset = hasLoop ? 1 : 0;
     const swipeThreshold = 60;
 
+    const sanitizeClone = (clone, sourceIndex) => {
+        clone.setAttribute('data-carousel-clone', 'true');
+        clone.setAttribute('data-carousel-source-index', String(sourceIndex));
+        clone.setAttribute('aria-hidden', 'true');
+        clone.setAttribute('inert', '');
+        if (clone.hasAttribute('id')) {
+            clone.removeAttribute('id');
+        }
+        clone.querySelectorAll('[id]').forEach(node => {
+            node.removeAttribute('id');
+        });
+        clone.querySelectorAll('label[for]').forEach(node => {
+            node.removeAttribute('for');
+        });
+        clone.querySelectorAll('[aria-labelledby]').forEach(node => {
+            node.removeAttribute('aria-labelledby');
+        });
+        clone.querySelectorAll('[aria-controls]').forEach(node => {
+            node.removeAttribute('aria-controls');
+        });
+        clone.querySelectorAll('a, button, input, select, textarea, [tabindex]').forEach(node => {
+            node.setAttribute('tabindex', '-1');
+        });
+    };
+
+    if (hasLoop) {
+        const firstClone = originalSlides[0].cloneNode(true);
+        sanitizeClone(firstClone, 0);
+        const lastClone = originalSlides[originalSlides.length - 1].cloneNode(true);
+        sanitizeClone(lastClone, originalSlides.length - 1);
+        track.insertBefore(lastClone, originalSlides[0]);
+        track.appendChild(firstClone);
+    }
+
+    const cloneSlides = hasLoop
+        ? Array.from(track.querySelectorAll('[data-carousel-clone]'))
+        : [];
+
     const setActiveSlide = (index) => {
-        slides.forEach((slide, slideIndex) => {
+        originalSlides.forEach((slide, slideIndex) => {
             slide.classList.toggle('is-active', slideIndex === index);
         });
+        if (hasLoop) {
+            cloneSlides.forEach(clone => {
+                const sourceIndex = Number(clone.getAttribute('data-carousel-source-index'));
+                clone.classList.toggle('is-active', sourceIndex === index);
+            });
+        }
     };
 
     if (totalSlides === 0) {
@@ -491,6 +537,7 @@ function deleteAllGoals() {
     let isDragging = false;
     let dragStartX = 0;
     let dragDeltaX = 0;
+    let activePointerId = null;
 
     const dismissHint = () => {
         if (hint && !hint.classList.contains('is-dismissed')) {
@@ -500,7 +547,7 @@ function deleteAllGoals() {
 
     const computeAnchorOffset = () => {
         const windowRect = windowEl.getBoundingClientRect();
-        const activeSlide = slides[activeIndex];
+        const activeSlide = originalSlides[activeIndex];
         if (!activeSlide) {
             return windowRect.height / 2;
         }
@@ -530,88 +577,123 @@ function deleteAllGoals() {
             return;
         }
         const segment = 100 / totalSlides;
+        const offsetX = segment * activeIndex;
         thumb.style.width = `${segment}%`;
-        thumb.style.transform = `translateX(${segment * activeIndex}%)`;
+        thumb.style.transform = `translate(${offsetX}%, -50%)`;
     };
 
-    const applyTransform = () => {
+    const getVisualIndexForActive = () => activeIndex + cloneOffset;
+    const getTranslateForVisualIndex = (visualIndex) => -(visualIndex * slideWidth);
+
+    const jumpToActive = () => {
+        track.style.transition = 'none';
+        track.style.transform = `translateX(${getTranslateForVisualIndex(getVisualIndexForActive())}px)`;
+        repositionArrows();
+    };
+
+    const animateToActive = () => {
         track.style.transition = TRANSITION_STYLE;
-        track.style.transform = `translateX(-${slideWidth * activeIndex}px)`;
+        track.style.transform = `translateX(${getTranslateForVisualIndex(getVisualIndexForActive())}px)`;
         updateThumb();
         repositionArrows();
     };
+
+    const animateToVisualIndex = (visualIndex) => {
+        track.style.transition = TRANSITION_STYLE;
+        track.style.transform = `translateX(${getTranslateForVisualIndex(visualIndex)}px)`;
+    };
+
+    let isLoopingTransition = false;
 
     const goToIndex = (targetIndex) => {
         if (totalSlides <= 1) {
             return;
         }
         dismissHint();
-        activeIndex = ((targetIndex % totalSlides) + totalSlides) % totalSlides;
+        const rawTarget = targetIndex;
+        const normalizedTarget = ((rawTarget % totalSlides) + totalSlides) % totalSlides;
+        const previousIndex = activeIndex;
+
+        if (normalizedTarget === previousIndex) {
+            animateToActive();
+            try {
+                windowEl.focus({ preventScroll: true });
+            } catch (err) {
+                windowEl.focus();
+            }
+            return;
+        }
+
+        const isForwardWrap = hasLoop && previousIndex === totalSlides - 1 && normalizedTarget === 0 && rawTarget > previousIndex;
+        const isBackwardWrap = hasLoop && previousIndex === 0 && normalizedTarget === totalSlides - 1 && rawTarget < previousIndex;
+
+        activeIndex = normalizedTarget;
         setActiveSlide(activeIndex);
-        track.style.transition = TRANSITION_STYLE;
-        applyTransform();
-        windowEl.focus({ preventScroll: true });
+
+        if (isForwardWrap) {
+            isLoopingTransition = true;
+            updateThumb();
+            repositionArrows();
+            animateToVisualIndex(totalSlides + cloneOffset);
+        } else if (isBackwardWrap) {
+            isLoopingTransition = true;
+            updateThumb();
+            repositionArrows();
+            animateToVisualIndex(0);
+        } else {
+            isLoopingTransition = false;
+            animateToActive();
+        }
+
+        try {
+            windowEl.focus({ preventScroll: true });
+        } catch (err) {
+            windowEl.focus();
+        }
     };
 
     const handleResize = () => {
         slideWidth = windowEl.offsetWidth;
-        track.style.transition = 'none';
-        track.style.transform = `translateX(-${slideWidth * activeIndex}px)`;
+        jumpToActive();
         updateThumb();
-        repositionArrows();
         requestAnimationFrame(() => {
             track.style.transition = TRANSITION_STYLE;
         });
     };
 
     const interactiveSelector = 'button, input, textarea, select, a, label, [data-carousel-static]';
+    const supportsPointerEvents = typeof window !== 'undefined' && 'PointerEvent' in window;
 
-    const handlePointerDown = (event) => {
-        if (event.pointerType === 'mouse' && event.button !== 0) {
-            return;
-        }
-        const interactiveTarget = event.target.closest(interactiveSelector);
-        if (interactiveTarget) {
-            return;
-        }
+    const startDragging = (clientX, pointerId = null) => {
         isDragging = true;
-        dragStartX = event.clientX;
+        activePointerId = pointerId;
+        dragStartX = clientX;
         dragDeltaX = 0;
-        try {
-            windowEl.setPointerCapture(event.pointerId);
-        } catch (err) {
-            // Some browsers may reject capture on non-primary pointers; ignore.
-        }
         windowEl.classList.add('is-dragging');
         track.style.transition = 'none';
         dismissHint();
     };
 
-    const handlePointerMove = (event) => {
+    const updateDragPosition = (clientX) => {
         if (!isDragging) {
             return;
         }
-        dragDeltaX = event.clientX - dragStartX;
-        track.style.transform = `translateX(${ -activeIndex * slideWidth + dragDeltaX }px)`;
+        dragDeltaX = clientX - dragStartX;
+        track.style.transform = `translateX(${ getTranslateForVisualIndex(getVisualIndexForActive()) + dragDeltaX }px)`;
     };
 
     const settleToActive = () => {
-        track.style.transition = TRANSITION_STYLE;
-        applyTransform();
+        animateToActive();
     };
 
-    const handlePointerEnd = (event) => {
+    const finishDrag = () => {
         if (!isDragging) {
             return;
         }
-        try {
-            windowEl.releasePointerCapture(event.pointerId);
-        } catch (err) {
-            // Pointer capture might already be released; ignore errors.
-        }
-        dismissHint();
         windowEl.classList.remove('is-dragging');
         isDragging = false;
+        activePointerId = null;
+        dismissHint();
         const traveled = Math.abs(dragDeltaX);
         if (traveled > swipeThreshold) {
             if (dragDeltaX < 0) {
@@ -625,10 +707,115 @@ function deleteAllGoals() {
         dragDeltaX = 0;
     };
 
-    windowEl.addEventListener('pointerdown', handlePointerDown);
-    windowEl.addEventListener('pointermove', handlePointerMove);
-    windowEl.addEventListener('pointerup', handlePointerEnd);
-    windowEl.addEventListener('pointercancel', handlePointerEnd);
+    const handlePointerDown = (event) => {
+        if (event.pointerType === 'mouse' && event.button !== 0) {
+            return;
+        }
+        if (isDragging) {
+            return;
+        }
+        const interactiveTarget = event.target.closest(interactiveSelector);
+        if (interactiveTarget) {
+            return;
+        }
+        startDragging(event.clientX, event.pointerId);
+        if (typeof windowEl.setPointerCapture === 'function') {
+            try {
+                windowEl.setPointerCapture(event.pointerId);
+            } catch (err) {
+                // Some browsers may reject capture on non-primary pointers; ignore.
+            }
+        }
+    };
+
+    const handlePointerMove = (event) => {
+        if (!isDragging || event.pointerId !== activePointerId) {
+            return;
+        }
+        updateDragPosition(event.clientX);
+    };
+
+    const handlePointerEnd = (event) => {
+        if (!isDragging || (event.pointerId !== undefined && event.pointerId !== activePointerId)) {
+            return;
+        }
+        if (typeof windowEl.releasePointerCapture === 'function') {
+            try {
+                windowEl.releasePointerCapture(event.pointerId);
+            } catch (err) {
+                // Pointer capture might already be released; ignore errors.
+            }
+        }
+        finishDrag();
+    };
+
+    const handlePointerCancel = handlePointerEnd;
+
+    if (supportsPointerEvents) {
+        windowEl.addEventListener('pointerdown', handlePointerDown);
+        windowEl.addEventListener('pointermove', handlePointerMove);
+        windowEl.addEventListener('pointerup', handlePointerEnd);
+        windowEl.addEventListener('pointercancel', handlePointerCancel);
+        window.addEventListener('pointerup', handlePointerEnd);
+        window.addEventListener('pointercancel', handlePointerCancel);
+    } else {
+        const handleTouchStart = (event) => {
+            if (isDragging) {
+                return;
+            }
+            if (event.touches.length === 0) {
+                return;
+            }
+            const interactiveTarget = event.target.closest(interactiveSelector);
+            if (interactiveTarget) {
+                return;
+            }
+            const touch = event.touches[0];
+            if (!touch) {
+                return;
+            }
+            startDragging(touch.clientX, 'touch');
+        };
+
+        const handleTouchMove = (event) => {
+            if (!isDragging) {
+                return;
+            }
+            const touch = event.touches[0] || event.changedTouches[0];
+            if (!touch) {
+                return;
+            }
+            updateDragPosition(touch.clientX);
+            if (event.cancelable) {
+                event.preventDefault();
+            }
+        };
+
+        const handleTouchEnd = () => {
+            finishDrag();
+        };
+
+        windowEl.addEventListener('touchstart', handleTouchStart, { passive: true });
+        windowEl.addEventListener('touchmove', handleTouchMove, { passive: false });
+        windowEl.addEventListener('touchend', handleTouchEnd);
+        windowEl.addEventListener('touchcancel', handleTouchEnd);
+    }
+
+    const handleTransitionEnd = (event) => {
+        if (event.target !== track || event.propertyName !== 'transform') {
+            return;
+        }
+        if (!isLoopingTransition) {
+            return;
+        }
+        jumpToActive();
+        requestAnimationFrame(() => {
+            track.style.transition = TRANSITION_STYLE;
+        });
+        isLoopingTransition = false;
+    };
+
+    track.addEventListener('transitionend', handleTransitionEnd);
 
     if (prevButton) {
         prevButton.addEventListener('click', () => {
@@ -665,7 +852,9 @@ function deleteAllGoals() {
     window.addEventListener('carousel:reposition', repositionArrows);
 
     updateThumb();
-    applyTransform();
-    repositionArrows();
+    jumpToActive();
+    requestAnimationFrame(() => {
+        track.style.transition = TRANSITION_STYLE;
+    });
     setActiveSlide(activeIndex);
 })();
