@@ -823,15 +823,15 @@ h2 {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 0%;
-    border: 1px solid rgba(17, 24, 39, 0.18);
-    background: rgba(17, 24, 39, 0.06);
+    border-radius: 0;
+    border: 1px solid rgba(17, 24, 39, 0.12);
+    background: transparent;
     color: rgba(17, 24, 39, 0.75);
     font-size: 9px;
     font-weight: 700;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
-    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    transition: all 0.2s ease;
     cursor: default;
 }
 
@@ -847,6 +847,10 @@ h2 {
 
 .priority-dot--importance::after {
     content: "IMP";
+}
+
+.priority-dot:not([data-level="High"]) {
+    background: var(--accent-light);
 }
 
 .quick-actions {
@@ -1004,27 +1008,37 @@ input[type="checkbox"]:active {
     min-width: max-content;
     padding-right: 18px;
     margin-right: 18px;
-    border-right: 1px solid rgba(17, 24, 39, 0.18);
+    position: relative;
+}
+
+.priority-group:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 24px;
+    width: 1px;
+    background: rgba(17, 24, 39, 0.12);
 }
 
 .priority-group:last-of-type {
-    border-right: none;
     margin-right: 0;
     padding-right: 0;
 }
 
 .priority-group__label {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #111;
+    letter-spacing: 1.2px;
+    color: #666;
     padding: 0;
 }
 
 .priority-options {
     display: flex;
-    gap: 10px;
+    gap: 8px;
 }
 
 .priority-option {
@@ -1034,7 +1048,6 @@ input[type="checkbox"]:active {
 }
 
 .priority-option input {
-    /* ensure focus outline can be drawn on chip */
     position: absolute;
     opacity: 0;
     pointer-events: none;
@@ -1046,29 +1059,29 @@ input[type="checkbox"]:active {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: auto;
-    padding: 7px 12px 5px;
-    border: none;
-    border-bottom: 2px solid transparent;
+    padding: 6px 12px;
+    border: 1px solid rgba(17, 24, 39, 0.12);
     background: transparent;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.4px;
-    color: rgba(17, 17, 17, 0.68);
+    letter-spacing: 0.5px;
+    color: rgba(17, 17, 17, 0.75);
     cursor: pointer;
     text-transform: uppercase;
-    transition: color 0.15s ease, border-color 0.15s ease;
+    transition: all 0.2s ease;
     line-height: 1;
 }
 
 .priority-option input:not(:checked) + .priority-chip:hover {
+    border-color: var(--accent-color);
     color: var(--accent-color);
-    border-bottom-color: rgba(17, 24, 39, 0.18);
+    background: var(--accent-light);
 }
 
 .priority-option input:checked + .priority-chip {
-    border-bottom-color: var(--accent-color);
-    color: var(--accent-color);
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: #fff;
 }
 
 .priority-option input:focus-visible + .priority-chip {
@@ -1269,7 +1282,7 @@ input[type="checkbox"]:active {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
     background: transparent;
@@ -1282,7 +1295,7 @@ input[type="checkbox"]:active {
     inset: 0;
     background: var(--accent-color);
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transition: all 0.2s ease;
     z-index: 0;
 }
 
@@ -1290,20 +1303,22 @@ input[type="checkbox"]:active {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     text-align: center;
     user-select: none;
     position: relative;
     z-index: 1;
+    transition: transform 0.2s ease;
 }
 
 .matrix-primary {
-    /* font-size: 16px; */
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
     text-transform: uppercase;
-    color: #4b4f55;
+    color: rgba(17, 24, 39, 0.75);
     display: inline-block;
+    transition: color 0.2s ease;
 }
 
 .matrix-tags {
@@ -1356,20 +1371,26 @@ input[type="checkbox"]:active {
 }
 
 .matrix-cell:hover:not(.selected) {
-    border-color: rgba(17, 24, 39, 0.28);
+    border-color: var(--accent-color);
+    background: var(--accent-light);
+}
+
+.matrix-cell:hover:not(.selected) .matrix-primary {
+    color: var(--accent-color);
 }
 
 .matrix-cell.selected {
     border-color: var(--accent-color);
+    background: var(--accent-color);
     z-index: 1;
 }
 
-.matrix-cell.selected::before {
-    opacity: 0.12;
+.matrix-cell.selected .matrix-primary {
+    color: #fff;
 }
 
-.matrix-cell.selected.matrix-high-high::before {
-    opacity: 0.18;
+.matrix-cell:hover .matrix-text {
+    transform: scale(1.02);
 }
 
 /* Color Options in Menu */
