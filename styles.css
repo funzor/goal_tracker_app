@@ -133,7 +133,7 @@ body {
     transform: translateY(-50%);
     background: var(--accent-color);
     box-shadow: 4px 4px 0 rgba(17, 17, 17, 0.2);
-    transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1);
+    transition: left 0.35s cubic-bezier(0.33, 1, 0.68, 1), width 0.35s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 .carousel-window {
@@ -199,7 +199,7 @@ body {
 .carousel-hint {
     position: absolute;
     top: 18px;
-    right: 0;
+    left: 50%;
     font-size: 10px;
     font-weight: 800;
     text-transform: uppercase;
@@ -209,12 +209,13 @@ body {
     border: 1px solid rgba(17, 17, 17, 0.2);
     background: rgba(255, 255, 255, 0.9);
     box-shadow: 4px 4px 0 rgba(17, 17, 17, 0.12);
+    transform: translate(-50%, 0);
     transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .carousel-hint.is-dismissed {
     opacity: 0;
-    transform: translateY(-6px);
+    transform: translate(-50%, -6px);
     pointer-events: none;
 }
 
@@ -973,7 +974,7 @@ input[type="checkbox"]:active {
     }
 
     .matrix-container {
-        margin: 24px auto 16px;
+        margin: 20px auto 12px;
     }
 
     .matrix-wrapper {
@@ -983,6 +984,39 @@ input[type="checkbox"]:active {
     .matrix-grid {
         width: clamp(180px, 72vw, 240px);
         height: clamp(180px, 72vw, 240px);
+    }
+}
+
+@media (max-width: 480px) {
+    .matrix-container {
+        margin: 16px auto 8px;
+    }
+
+    .matrix-wrapper {
+        gap: 6px;
+    }
+
+    .matrix-grid {
+        width: clamp(150px, 65vw, 190px);
+        height: clamp(150px, 65vw, 190px);
+    }
+
+    .matrix-text {
+        gap: 6px;
+    }
+
+    .matrix-primary {
+        font-size: 13px;
+    }
+
+    .matrix-tag {
+        font-size: 9px;
+        padding: 2px 6px;
+    }
+
+    .axis-label {
+        font-size: 8px;
+        letter-spacing: 1.2px;
     }
 }
 
@@ -1307,4 +1341,26 @@ input[type="checkbox"]:active {
     .quadrant-someday {
         order: 4;
     }
+}
+
+.app-footer {
+    margin: 48px 0 24px;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: rgba(17, 17, 17, 0.55);
+}
+
+.app-footer__link {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(17, 17, 17, 0.25);
+    padding-bottom: 1px;
+}
+
+.app-footer__link:hover,
+.app-footer__link:focus {
+    color: rgba(17, 17, 17, 0.8);
+    border-bottom-color: rgba(17, 17, 17, 0.5);
 }

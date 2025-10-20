@@ -711,7 +711,7 @@ function deleteAllGoals() {
         if (event.pointerType === 'mouse' && event.button !== 0) {
             return;
         }
-        if (isDragging) {
+        if (isDragging || isLoopingTransition) {
             return;
         }
         const interactiveTarget = event.target.closest(interactiveSelector);
@@ -760,7 +760,7 @@ function deleteAllGoals() {
         window.addEventListener('pointercancel', handlePointerCancel);
     } else {
         const handleTouchStart = (event) => {
-            if (isDragging) {
+            if (isDragging || isLoopingTransition) {
                 return;
             }
             if (event.touches.length === 0) {

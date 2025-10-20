@@ -1,6 +1,6 @@
 # Goal Tracker App
 
-A minimalist, brutalist-inspired goal tracking application with customizable themes.
+A minimalist, goal tracking application with customizable themes.
 
 ## Features
 
