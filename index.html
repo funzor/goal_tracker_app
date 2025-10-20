@@ -1,31 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <script src="script.js" defer></script>
-    <title>Goal Tracker App</title>
+    <title>QuadGrid Goal Tracker</title>
 </head>
+
 <body>
-    <h1>Welcome to the Goal Tracker</h1>
-    <div id="goals-progress-bar">
-        <p id="progress-bar-text">Enter a goal below to get started</p>
-        <input type="button" value="🗑️ All Goals" id="delete-all-goals-button">
-    </p>
+    <!-- Top Bar -->
+    <div class="top-bar app-block app-block--header">
+        <h1 class="app-title">QuadGrid Goal Tracker</h1>
+        <div class="top-bar-actions">
+            <span id="progress-indicator" class="progress-indicator">0/0</span>
+            <button id="menu-button" class="menu-button">
+                <span class="menu-icon">☰</span>
+            </button>
+        </div>
     </div>
-    <h4>Add a New Goal</h4>
-    <div class="goal-input-container">
-        <input type="text" id="new-goal-input">
-        <input type="button" value="Add Goal" id="add-goal-button">
+
+    <!-- Slide-out Menu -->
+    <div id="menu-panel" class="menu-panel">
+        <div class="menu-header">
+            <h3>Settings</h3>
+            <button id="menu-close" class="menu-close">✕</button>
+        </div>
+        
+        <div class="menu-section">
+            <label class="menu-label">Theme</label>
+            <div class="color-options">
+                <div class="color-option selected" data-color="black" style="background: #000;" title="Midnight"></div>
+                <div class="color-option" data-color="blue" style="background: #0066FF;" title="Electric"></div>
+                <div class="color-option" data-color="orange" style="background: #FF6B00;" title="Tangerine"></div>
+                <div class="color-option" data-color="green" style="background: #00C853;" title="Neon"></div>
+                <div class="color-option" data-color="pink" style="background: #FF006E;" title="Magenta"></div>
+                <div class="color-option" data-color="purple" style="background: #7C3AED;" title="Violet"></div>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <button id="menu-delete-all" class="menu-action-button delete-button">
+                Clear Goals
+            </button>
+        </div>
     </div>
+
+    <div id="menu-overlay" class="menu-overlay"></div>
     
-    <h2>Goals</h2>
-    <ol id="goals-list">
+    <div class="carousel-shell" data-carousel>
+        <div class="carousel-rail">
+            <button class="carousel-arrow carousel-arrow--prev" type="button" data-carousel-prev aria-label="Previous panel">←</button>
+            <div class="carousel-rail-track" aria-hidden="true">
+                <span class="carousel-label">Build</span>
+                <div class="carousel-line">
+                    <span class="carousel-thumb" data-carousel-thumb></span>
+                </div>
+                <span class="carousel-label">Review</span>
+            </div>
+            <button class="carousel-arrow carousel-arrow--next" type="button" data-carousel-next aria-label="Next panel">→</button>
+        </div>
 
-    </ol>
+        <div class="carousel-window" data-carousel-window tabindex="0">
+            <div class="carousel-track" data-carousel-track>
+                <section class="carousel-slide" data-carousel-panel="builder">
+                    <div class="app-block app-block--builder" id="new-goal-section">
+                        <h2>New Goal</h2>
+                        <div class="goal-input-container" data-arrow-anchor>
+                            <div class="input-section step" data-step="1">
+                                <label class="step-label" for="new-goal-input">Goal</label>
+                                <input type="text" id="new-goal-input" placeholder="">
+                            </div>
+                            
+                            <div class="matrix-section step" data-step="2">
+                                <label class="step-label">Priority</label>
+                                <div class="matrix-container" data-carousel-static>
+                                    <div class="matrix-wrapper">
+                                        <div class="matrix-axis-y">
+                                            <span class="axis-arrow">↑</span>
+                                            <span class="axis-label">IMPORTANT</span>
+                                        </div>
+                                        <div class="matrix-grid">
+                                            <div class="matrix-cell matrix-low-high" data-urgency="Low" data-importance="High" title="Important & Not Urgent">
+                                                <div class="matrix-text">
+                                                    <span class="matrix-primary">FOCUS</span>
+                                                </div>
+                                            </div>
+                                            <div class="matrix-cell matrix-high-high" data-urgency="High" data-importance="High" title="Urgent & Important">
+                                                <div class="matrix-text">
+                                                    <span class="matrix-primary">RIGHT NOW</span>
+                                                    <div class="matrix-tags">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="matrix-cell matrix-low-low selected" data-urgency="Low" data-importance="Low" title="Not Urgent & Not Important">
+                                                <div class="matrix-text">
+                                                    <span class="matrix-primary">SOMEDAY</span>
+                                                    <div class="matrix-tags">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="matrix-cell matrix-high-low" data-urgency="High" data-importance="Low" title="Urgent & Not Important">
+                                                <div class="matrix-text">
+                                                    <span class="matrix-primary">RUSH</span>
+                                                    <div class="matrix-tags">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="matrix-axis-x">
+                                            <span class="axis-label">URGENT</span>
+                                            <span class="axis-arrow">→</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="step cta-step" data-step="3">
+                                <input type="button" value="Add Goal →" id="add-goal-button" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
+                <section class="carousel-slide" data-carousel-panel="review">
+                    <div class="app-block app-block--goals">
+                        <nav class="view-tabs" role="tablist">
+                            <button class="view-tab active" type="button" role="tab" aria-selected="true" data-view="grid">
+                                Matrix View
+                            </button>
+                            <button class="view-tab" type="button" role="tab" aria-selected="false" data-view="list">
+                                List View
+                            </button>
+                        </nav>
 
+                        <h2>Goals <span class="goal-count-badge" id="goal-count-badge">0</span></h2>
+                    
+                        <div id="empty-state" class="empty-state">
+                            <p class="empty-state-text">No goals yet. Add one above.</p>
+                        </div>
+                    
+                        <div id="goals-grid" class="goals-grid-view">
+                            <div class="rotate-tip" id="rotate-tip">
+                                Try rotating your phone sideways for the full matrix experience.
+                            </div>
+                            <div class="goals-grid" data-arrow-anchor>
+                                <div class="grid-quadrant quadrant-focus" data-urgency="Low" data-importance="High">
+                                    <span class="quadrant-label">
+                                        FOCUS
+                                    </span>
+                                    <div class="quadrant-body" aria-live="polite"></div>
+                                </div>
+                                <div class="grid-quadrant quadrant-critical" data-urgency="High" data-importance="High">
+                                    <span class="quadrant-label">
+                                        CRITICAL
+                                    </span>
+                                    <div class="quadrant-body" aria-live="polite"></div>
+                                </div>
+                                <div class="grid-quadrant quadrant-someday" data-urgency="Low" data-importance="Low">
+                                    <span class="quadrant-label">
+                                        SOMEDAY
+                                    </span>
+                                    <div class="quadrant-body" aria-live="polite"></div>
+                                </div>
+                                <div class="grid-quadrant quadrant-rush" data-urgency="High" data-importance="Low">
+                                    <span class="quadrant-label">
+                                        RUSH
+                                    </span>
+                                    <div class="quadrant-body" aria-live="polite"></div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <ol id="goals-list" class="list-view-panel is-hidden">
+
+                        </ol>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <span class="carousel-hint" data-carousel-hint>← swipe →</span>
+    </div>
+
+    <div class="goal-modal" id="goal-modal" role="status" aria-live="assertive">
+        <div class="goal-modal__panel">
+            <span class="goal-modal__icon">★</span>
+            <div class="goal-modal__copy">
+                <p class="goal-modal__title">Goal Added</p>
+                <p class="goal-modal__subtitle">Locked into your matrix.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <small>© 2025 QuadGrid Goal Tracker | <a href="https://www.mhcodeprojects.com" class="app-footer__link">Mike Hasson</a></small>
+    </footer>
 
 </body>
+
 </html>

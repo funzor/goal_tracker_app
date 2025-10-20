@@ -6,6 +6,7 @@ Short-term tasks:
     ☐ Delete Single item button @low
     ☐ Add edit button to goals @low
     ☐ Add Importantce (high, low) and urgency (high low) tagging, with sorting
+    ☐ Consolidate matrix badge text into shared helper
     ☐ Add Eisenhower Matrix quadrant view
     
     
@@ -15,3 +16,22 @@ Long-term tasks:
     ☐ User can re-order goals
     ☐ Total goal completion displays as a progress bar
     ☐ User can create Sub goals that can act as prerequisites to completing the parent goal
+
+Cloud Sink:
+    ☐ Define opt-in flow for syncing and clarify offline differences
+    ☐ Update data model with stable IDs, timestamps, and migrations for sync
+    ☐ Implement authentication, session handling, and account management
+    ☐ Build cloud APIs and storage for user goal data
+    ☐ Add bidirectional sync logic with conflict resolution
+    ☐ Harden security, encryption, and privacy documentation
+    ☐ Polish UX for sync status, device management, and manual retries
+    ☐ Expand automated tests, load testing, and staged rollout plan
+    ☐ Prepare operations runbooks, alerts, and support tooling
+
+Premium Features:
+    ☐ Personal analytics and review mode
+    ☐ Smart suggestions for prioritization and goal phrasing
+    ☐ Automation rules for reminders and workflow tweaks
+    ☐ Collaboration packs with shared boards and check-ins
+    ☐ Advanced theming, widgets, and exportables
+    ☐ Attachments and rich notes per goal
