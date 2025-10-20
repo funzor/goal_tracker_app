@@ -90,6 +90,80 @@ body {
     inset: 20px 20px 26px;
 }
 
+/* Welcome Screen */
+.app-block--welcome {
+    --block-accent-color: var(--accent-color);
+    padding: 32px;
+    background: #fff;
+}
+
+.auth-placeholder {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    z-index: 1;
+}
+
+.auth-button {
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #666;
+    background: none;
+    border: 1px solid rgba(17, 17, 17, 0.15);
+    cursor: not-allowed;
+    transition: opacity 0.2s ease;
+}
+
+.auth-button:hover {
+    opacity: 0.8;
+}
+
+.welcome-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 64px;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 32px 24px;
+    min-height: 360px;
+}
+
+.welcome-message {
+    text-align: center;
+}
+
+.welcome-message h2 {
+    font-size: 24px;
+    margin-bottom: 16px;
+    color: var(--accent-color);
+    letter-spacing: -0.3px;
+}
+
+.welcome-lead {
+    font-size: 16px;
+    font-weight: 400;
+    color: #444;
+    text-align: center;
+    line-height: 1.6;
+    letter-spacing: 0.2px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+
+
+.welcome-cta {
+    text-align: center;
+    padding: 32px;
+    background: #fafafa;
+    font-size: 15px;
+    font-weight: 500;
+    color: #444;
+    border-top: 1px solid rgba(17, 17, 17, 0.08);
+}
+
 /* Carousel */
 .carousel-shell {
     position: relative;
@@ -106,8 +180,8 @@ body {
 
 .carousel-rail-track {
     flex: 1;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 12px;
     font-size: 11px;
@@ -117,23 +191,34 @@ body {
     color: rgba(17, 17, 17, 0.5);
 }
 
+.carousel-labels {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 12px;
+}
+
 .carousel-line {
     position: relative;
-    flex: 1;
-    height: 2px;
-    background: rgba(17, 17, 17, 0.15);
+    width: 100%;
+    height: 16px;
+    background: rgba(17, 17, 17, 0.06);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.carousel-line:hover {
+    background: rgba(17, 17, 17, 0.08);
 }
 
 .carousel-thumb {
     position: absolute;
-    top: 50%;
+    top: 0;
     left: 0;
-    width: 50%;
-    height: 6px;
-    transform: translateY(-50%);
+    width: 33.333%;
+    height: 100%;
     background: var(--accent-color);
-    box-shadow: 4px 4px 0 rgba(17, 17, 17, 0.2);
-    transition: left 0.35s cubic-bezier(0.33, 1, 0.68, 1), width 0.35s cubic-bezier(0.33, 1, 0.68, 1);
+    transition: left 0.35s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 .carousel-window {
@@ -969,6 +1054,20 @@ input[type="checkbox"]:active {
 }
 
 @media (max-width: 640px) {
+    body {
+        padding: 16px;
+    }
+    
+    .auth-placeholder {
+        top: 16px;
+        right: 16px;
+    }
+    
+    .auth-button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
     .goal-input-container {
         gap: 24px;
     }
@@ -984,6 +1083,52 @@ input[type="checkbox"]:active {
     .matrix-grid {
         width: clamp(180px, 72vw, 240px);
         height: clamp(180px, 72vw, 240px);
+    }
+
+    /* Welcome Screen Mobile */
+    .welcome-content {
+        gap: 24px;
+    }
+
+    .welcome-lead {
+        font-size: 16px;
+    }
+
+    .method-grid {
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .method-quadrant {
+        padding: 12px;
+    }
+
+    .method-quadrant h3 {
+        font-size: 14px;
+    }
+
+    .method-quadrant p {
+        font-size: 12px;
+    }
+
+    /* Improved Touch Targets */
+    .carousel-arrow {
+        width: 48px;
+        height: 48px;
+    }
+
+    .matrix-cell {
+        min-height: 90px;
+    }
+
+    input[type="checkbox"] {
+        width: 24px;
+        height: 24px;
+    }
+
+    .menu-button {
+        width: 48px;
+        height: 48px;
     }
 }
 

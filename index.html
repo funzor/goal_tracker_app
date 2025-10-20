@@ -31,12 +31,12 @@
         <div class="menu-section">
             <label class="menu-label">Theme</label>
             <div class="color-options">
-                <div class="color-option selected" data-color="black" style="background: #000;" title="Midnight"></div>
                 <div class="color-option" data-color="blue" style="background: #0066FF;" title="Electric"></div>
                 <div class="color-option" data-color="orange" style="background: #FF6B00;" title="Tangerine"></div>
                 <div class="color-option" data-color="green" style="background: #00C853;" title="Neon"></div>
                 <div class="color-option" data-color="pink" style="background: #FF006E;" title="Magenta"></div>
                 <div class="color-option" data-color="purple" style="background: #7C3AED;" title="Violet"></div>
+                <div class="color-option selected" data-color="black" style="background: #000;" title="Midnight"></div>
             </div>
         </div>
 
@@ -53,17 +53,36 @@
         <div class="carousel-rail">
             <button class="carousel-arrow carousel-arrow--prev" type="button" data-carousel-prev aria-label="Previous panel">←</button>
             <div class="carousel-rail-track" aria-hidden="true">
-                <span class="carousel-label">Plan It</span>
+                <div class="carousel-labels">
+                    <span class="carousel-label">Welcome</span>
+                    <span class="carousel-label">Plan It</span>
+                    <span class="carousel-label">Do It</span>
+                </div>
                 <div class="carousel-line">
                     <span class="carousel-thumb" data-carousel-thumb></span>
                 </div>
-                <span class="carousel-label">Do it</span>
             </div>
             <button class="carousel-arrow carousel-arrow--next" type="button" data-carousel-next aria-label="Next panel">→</button>
         </div>
 
         <div class="carousel-window" data-carousel-window tabindex="0">
             <div class="carousel-track" data-carousel-track>
+                <section class="carousel-slide" data-carousel-panel="welcome">
+                    <div class="app-block app-block--welcome">
+                        <div class="auth-placeholder">
+                            <button class="auth-button" disabled>Sign in (coming soon)</button>
+                        </div>
+                        <div class="welcome-content">
+                            <div class="welcome-message">
+                                <h2>Focus on what matters</h2>
+                                <p class="welcome-lead">Organize goals by importance and urgency to make better decisions about your time and energy.</p>
+                            </div>
+                            <div class="welcome-cta">
+                                <p>Swipe right to begin →</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
                 <section class="carousel-slide" data-carousel-panel="builder">
                     <div class="app-block app-block--builder" id="new-goal-section">
                         <h2>New Goal</h2>
