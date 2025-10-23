@@ -331,6 +331,146 @@ body {
     color: white;
 }
 
+.primary-action-container {
+    margin: 28px 0 36px;
+}
+
+.primary-action-button {
+    width: 100%;
+    padding: 18px 24px;
+    border: none;
+    background: var(--accent-color);
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    box-shadow: 0 18px 36px rgba(15, 23, 42, 0.16);
+    border-radius: 0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.primary-action-button:hover,
+.primary-action-button:focus-visible {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 22px 40px rgba(15, 23, 42, 0.2);
+}
+
+.primary-action-button:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 4px;
+}
+
+.primary-action-button:active {
+    transform: translateY(0);
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.18);
+}
+
+.builder-modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    z-index: 150;
+}
+
+.builder-modal.is-visible {
+    pointer-events: auto;
+    opacity: 1;
+}
+
+.builder-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+}
+
+.builder-modal__content {
+    position: relative;
+    width: min(640px, 100%);
+    max-height: calc(100vh - 80px);
+    background: #ffffff;
+    padding: 42px 36px 36px;
+    overflow-y: auto;
+    box-shadow: 0 28px 60px rgba(15, 23, 42, 0.35);
+    border-radius: 0;
+}
+
+.builder-modal__content .app-block--builder {
+    margin: 0;
+    padding: 16px 0 0;
+    border: none;
+    box-shadow: none;
+}
+
+.builder-modal__heading {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+    letter-spacing: -0.2px;
+}
+
+.builder-modal__close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    font-size: 24px;
+    color: rgba(17, 24, 39, 0.6);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.builder-modal__close:hover,
+.builder-modal__close:focus-visible {
+    color: #111827;
+}
+
+.builder-modal.is-visible .builder-modal__content {
+    animation: builder-modal-enter 0.25s ease;
+}
+
+@keyframes builder-modal-enter {
+    from {
+        transform: translateY(12px);
+        opacity: 0.9;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+body.builder-modal-open {
+    overflow: hidden;
+}
+
+@media (max-width: 560px) {
+    .builder-modal {
+        padding: 12px;
+    }
+
+    .builder-modal__content {
+        width: 100%;
+        max-height: calc(100vh - 40px);
+        padding: 34px 20px 28px;
+    }
+}
+
 h4 {
     color: #404040;
     font-weight: 700;
@@ -545,8 +685,8 @@ h4 {
     width: 100%;
     padding: 16px;
     border: none;
-    background: #000;
-    color: white;
+    background: var(--accent-color);
+    color: #ffffff;
     cursor: pointer;
     border-radius: 0;
     font-size: 14px;
@@ -559,16 +699,17 @@ h4 {
 }
 
 #add-goal-button:hover:not(:disabled) {
-    opacity: 0.85;
+    background: var(--accent-hover);
+    transform: translateY(-1px);
 }
 
 #add-goal-button:active:not(:disabled) {
-    opacity: 0.7;
+    transform: translateY(0);
 }
 
 #add-goal-button:disabled {
-    background: #e0e0e0;
-    color: #999;
+    background: rgba(17, 24, 39, 0.08);
+    color: rgba(17, 24, 39, 0.45);
     cursor: not-allowed;
     transform: translateY(0);
     box-shadow: none;
@@ -736,6 +877,14 @@ h2 {
     border-radius: 0;
     margin-bottom: 20px;
     background: #ffffff;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.empty-state:hover,
+.empty-state:focus-visible {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px var(--accent-light);
 }
 
 .empty-state-text {

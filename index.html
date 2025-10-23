@@ -54,95 +54,13 @@
     </div>
 
     <div id="menu-overlay" class="menu-overlay"></div>
-    
-    <div class="app-block app-block--builder" id="new-goal-section">
-        <!-- <h2>New Goal</h2> -->
-        <div class="goal-input-container">
-            <!-- <div class="input-section step" data-step="1"> -->
-                <!-- <label class="step-label" for="new-goal-input">Goal</label> -->
-                <input type="text" id="new-goal-input" placeholder="enter a goal or task">
-            </div>
 
-            <!-- <div class="matrix-section step" data-step="2"> -->
-                <!-- <label class="step-label">Priority</label> -->
-                <div class="priority-selector">
-                    <fieldset class="priority-group" aria-label="Importance level">
-                        <legend class="priority-group__label">Importance</legend>
-                        <div class="priority-options">
-                            <label class="priority-option">
-                                <input type="radio" name="importance-level" value="Low" checked>
-                                <span class="priority-chip">Low</span>
-                            </label>
-                            <label class="priority-option">
-                                <input type="radio" name="importance-level" value="High">
-                                <span class="priority-chip">High</span>
-                            </label>
-                        </div>
-                    </fieldset>
-                    <fieldset class="priority-group" aria-label="Urgency level">
-                        <legend class="priority-group__label">Urgency</legend>
-                        <div class="priority-options">
-                            <label class="priority-option">
-                                <input type="radio" name="urgency-level" value="Low" checked>
-                                <span class="priority-chip">Low</span>
-                            </label>
-                            <label class="priority-option">
-                                <input type="radio" name="urgency-level" value="High">
-                                <span class="priority-chip">High</span>
-                            </label>
-                        </div>
-                    </fieldset>
-                </div>
-                <div class="priority-divider" aria-hidden="true"></div>
-                <div class="matrix-container">
-                    <div class="matrix-wrapper">
-                        <div class="matrix-axis-y">
-                            <span class="axis-arrow">↑</span>
-                            <span class="axis-label">IMPORTANT</span>
-                        </div>
-                        <div class="matrix-grid">
-                            <div class="matrix-cell matrix-low-high" data-urgency="Low" data-importance="High" title="Important & Not Urgent">
-                                <div class="matrix-text">
-                                    <span class="matrix-primary">FOCUS</span>
-                                </div>
-                            </div>
-                            <div class="matrix-cell matrix-high-high" data-urgency="High" data-importance="High" title="Urgent & Important">
-                                <div class="matrix-text">
-                                    <span class="matrix-primary">RIGHT NOW</span>
-                                    <div class="matrix-tags">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="matrix-cell matrix-low-low selected" data-urgency="Low" data-importance="Low" title="Not Urgent & Not Important">
-                                <div class="matrix-text">
-                                    <span class="matrix-primary">SOMEDAY</span>
-                                    <div class="matrix-tags">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="matrix-cell matrix-high-low" data-urgency="High" data-importance="Low" title="Urgent & Not Important">
-                                <div class="matrix-text">
-                                    <span class="matrix-primary">RUSH</span>
-                                    <div class="matrix-tags">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="matrix-axis-x">
-                            <span class="axis-label">URGENT</span>
-                            <span class="axis-arrow">→</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- <div class="step cta-step" data-step="3"> -->
-                <input type="button" value="Add Goal →" id="add-goal-button" disabled>
-            </div>
-        </div>
+    <div class="primary-action-container">
+        <button id="open-goal-builder" class="primary-action-button" type="button">
+            + NEW GOAL
+        </button>
     </div>
 
-    
     <div class="app-block app-block--goals">
         <nav class="view-tabs" role="tablist">
             <button class="view-tab active" type="button" role="tab" aria-selected="true" data-view="grid">
@@ -155,7 +73,7 @@
 
         <h2>Goals <span class="goal-count-badge" id="goal-count-badge">0</span></h2>
     
-        <div id="empty-state" class="empty-state">
+        <div id="empty-state" class="empty-state" role="button" tabindex="0" aria-label="Add a new goal">
             <p class="empty-state-text">No goals yet. Tap here to add one.</p>
         </div>
     
@@ -199,6 +117,89 @@
         <ol id="goals-list" class="list-view-panel">
 
         </ol>
+    </div>
+
+    <div id="goal-builder-modal" class="builder-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="goal-builder-title">
+        <div class="builder-modal__overlay" data-builder-dismiss></div>
+        <div class="builder-modal__content" role="document">
+            <button class="builder-modal__close" id="goal-builder-close" type="button" aria-label="Close new goal form">✕</button>
+            <h2 id="goal-builder-title" class="builder-modal__heading">New Goal</h2>
+            <div class="app-block app-block--builder" id="new-goal-section">
+                <div class="goal-input-container">
+                    <input type="text" id="new-goal-input" placeholder="enter a goal or task">
+                    <div class="priority-selector">
+                        <fieldset class="priority-group" aria-label="Importance level">
+                            <legend class="priority-group__label">Importance</legend>
+                            <div class="priority-options">
+                                <label class="priority-option">
+                                    <input type="radio" name="importance-level" value="Low" checked>
+                                    <span class="priority-chip">Low</span>
+                                </label>
+                                <label class="priority-option">
+                                    <input type="radio" name="importance-level" value="High">
+                                    <span class="priority-chip">High</span>
+                                </label>
+                            </div>
+                        </fieldset>
+                        <fieldset class="priority-group" aria-label="Urgency level">
+                            <legend class="priority-group__label">Urgency</legend>
+                            <div class="priority-options">
+                                <label class="priority-option">
+                                    <input type="radio" name="urgency-level" value="Low" checked>
+                                    <span class="priority-chip">Low</span>
+                                </label>
+                                <label class="priority-option">
+                                    <input type="radio" name="urgency-level" value="High">
+                                    <span class="priority-chip">High</span>
+                                </label>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="priority-divider" aria-hidden="true"></div>
+                    <div class="matrix-container">
+                        <div class="matrix-wrapper">
+                            <div class="matrix-axis-y">
+                                <span class="axis-arrow">↑</span>
+                                <span class="axis-label">IMPORTANT</span>
+                            </div>
+                            <div class="matrix-grid">
+                                <div class="matrix-cell matrix-low-high" data-urgency="Low" data-importance="High" title="Important & Not Urgent">
+                                    <div class="matrix-text">
+                                        <span class="matrix-primary">FOCUS</span>
+                                    </div>
+                                </div>
+                                <div class="matrix-cell matrix-high-high" data-urgency="High" data-importance="High" title="Urgent & Important">
+                                    <div class="matrix-text">
+                                        <span class="matrix-primary">RIGHT NOW</span>
+                                        <div class="matrix-tags">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="matrix-cell matrix-low-low selected" data-urgency="Low" data-importance="Low" title="Not Urgent & Not Important">
+                                    <div class="matrix-text">
+                                        <span class="matrix-primary">SOMEDAY</span>
+                                        <div class="matrix-tags">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="matrix-cell matrix-high-low" data-urgency="High" data-importance="Low" title="Urgent & Not Important">
+                                    <div class="matrix-text">
+                                        <span class="matrix-primary">RUSH</span>
+                                        <div class="matrix-tags">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="matrix-axis-x">
+                                <span class="axis-label">URGENT</span>
+                                <span class="axis-arrow">→</span>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="button" value="Add Goal →" id="add-goal-button" disabled>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="goal-modal" id="goal-modal" role="status" aria-live="assertive">

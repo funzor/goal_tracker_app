@@ -5,6 +5,11 @@ const newGoalInput = document.getElementById('new-goal-input');
 const viewTabs = document.querySelectorAll('.view-tab');
 const goalsGridView = document.getElementById('goals-grid');
 const goalModal = document.getElementById('goal-modal');
+const goalBuilderModal = document.getElementById('goal-builder-modal');
+const openGoalBuilderButton = document.getElementById('open-goal-builder');
+const closeGoalBuilderButton = document.getElementById('goal-builder-close');
+const goalBuilderOverlay = goalBuilderModal ? goalBuilderModal.querySelector('[data-builder-dismiss]') : null;
+const emptyState = document.getElementById('empty-state');
 let goalModalTimeout = null;
 let currentView = 'grid';
 
@@ -15,6 +20,38 @@ if (newGoalInput) {
 if (addGoalButton) {
     addGoalButton.addEventListener('click', getNewGoalText);
 }
+
+if (openGoalBuilderButton) {
+    openGoalBuilderButton.addEventListener('click', openGoalBuilder);
+}
+
+if (closeGoalBuilderButton) {
+    closeGoalBuilderButton.addEventListener('click', () => closeGoalBuilder({ returnFocus: true }));
+}
+
+if (goalBuilderOverlay) {
+    goalBuilderOverlay.addEventListener('click', () => closeGoalBuilder({ returnFocus: true }));
+}
+
+if (emptyState) {
+    emptyState.addEventListener('click', openGoalBuilder);
+    emptyState.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            openGoalBuilder();
+        }
+    });
+}
+
+document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || event.defaultPrevented) {
+        return;
+    }
+    if (goalBuilderModal && goalBuilderModal.classList.contains('is-visible')) {
+        event.preventDefault();
+        closeGoalBuilder({ returnFocus: true });
+    }
+});
 
 viewTabs.forEach(tab => {
     tab.addEventListener('click', () => {
@@ -28,6 +65,48 @@ viewTabs.forEach(tab => {
 let selectedImportance = 'Low';
 let selectedUrgency = 'Low';
 let isUpdatingPriority = false;
+
+function openGoalBuilder() {
+    if (!goalBuilderModal) {
+        return;
+    }
+    if (goalBuilderModal.classList.contains('is-visible')) {
+        return;
+    }
+    goalBuilderModal.classList.add('is-visible');
+    goalBuilderModal.setAttribute('aria-hidden', 'false');
+    if (document.body) {
+        document.body.classList.add('builder-modal-open');
+    }
+    enableAddGoalButton();
+    requestAnimationFrame(() => {
+        if (!newGoalInput) {
+            return;
+        }
+        try {
+            newGoalInput.focus({ preventScroll: true });
+        } catch (err) {
+            newGoalInput.focus();
+        }
+    });
+}
+
+function closeGoalBuilder(options = {}) {
+    if (!goalBuilderModal) {
+        return;
+    }
+    if (!goalBuilderModal.classList.contains('is-visible')) {
+        return;
+    }
+    goalBuilderModal.classList.remove('is-visible');
+    goalBuilderModal.setAttribute('aria-hidden', 'true');
+    if (document.body) {
+        document.body.classList.remove('builder-modal-open');
+    }
+    if (options.returnFocus && openGoalBuilderButton) {
+        openGoalBuilderButton.focus();
+    }
+}
 
 // -------- Matrix Quadrant Selector ----------//
 const matrixCells = document.querySelectorAll('.matrix-cell');
@@ -199,6 +278,9 @@ menuDeleteAll.addEventListener('click', function() {
 
 
 function enableAddGoalButton(){
+    if (!newGoalInput || !addGoalButton) {
+        return;
+    }
     const trimmedInput = newGoalInput.value.trim();
     if (trimmedInput.length > 0) {
         addGoalButton.disabled = false;
@@ -257,6 +339,7 @@ function getNewGoalText() {
     addGoalButton.disabled = true;
     updateGoalCount();
     sortGoalsList();
+    closeGoalBuilder();
     showGoalModal();
 }
 
@@ -454,7 +537,6 @@ function updateGoalCount() {
 };
 
 function updateEmptyStateVisibility(goalsCount) {
-    const emptyState = document.getElementById('empty-state');
     if (!emptyState) {
         return;
     }
