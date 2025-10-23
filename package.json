@@ -1,0 +1,24 @@
+{
+  "name": "goal_tracker_app",
+  "version": "1.0.0",
+  "description": "A minimalist, goal tracking application with customizable themes.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mh-code-projects/goal_tracker_app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/mh-code-projects/goal_tracker_app/issues"
+  },
+  "homepage": "https://github.com/mh-code-projects/goal_tracker_app#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
