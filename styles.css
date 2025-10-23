@@ -46,11 +46,12 @@ body {
 
 .app-block--builder {
     padding: 28px 32px 32px;
+    margin-top: 36px;
 }
 
 .app-block--goals {
     padding: 28px 32px 32px;
-    margin-bottom: 0;
+    margin-bottom: 48px;
 }
 
 /* Welcome Screen */
@@ -125,165 +126,6 @@ body {
     font-weight: 500;
     color: #444;
     border-top: 1px solid rgba(17, 17, 17, 0.08);
-}
-
-/* Carousel */
-.carousel-shell {
-    position: relative;
-    margin-top: 36px;
-    margin-bottom: 48px;
-}
-
-.carousel-rail {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.carousel-rail-track {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    color: rgba(17, 17, 17, 0.5);
-}
-
-.carousel-labels {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    padding: 0 12px;
-}
-
-.carousel-line {
-    position: relative;
-    width: 100%;
-    height: 16px;
-    background: rgba(17, 17, 17, 0.06);
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.carousel-line:hover {
-    background: rgba(17, 17, 17, 0.08);
-}
-
-.carousel-thumb {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 33.333%;
-    height: 100%;
-    background: var(--accent-color);
-    transition: left 0.35s cubic-bezier(0.33, 1, 0.68, 1);
-}
-
-.carousel-window {
-    position: relative;
-    overflow: hidden;
-    touch-action: pan-y;
-    cursor: grab;
-}
-
-.carousel-window.is-dragging {
-    cursor: grabbing;
-}
-
-.carousel-track {
-    display: flex;
-    transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1);
-    gap: 0;
-}
-
-.carousel-slide {
-    flex: 0 0 100%;
-    min-width: 100%;
-    display: flex;
-    align-self: flex-start;
-}
-
-.carousel-slide:not(.is-active) > .app-block {
-    --block-shadow: none;
-}
-
-.carousel-slide > .app-block {
-    width: 100%;
-    margin-bottom: 0;
-}
-
-.carousel-arrow {
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 0.5px solid #a7a7a7;
-    background: rgba(255, 255, 255, 0.92);
-    color: #111;
-    font-size: 18px;
-    font-weight: 800;
-    border-radius: 0;
-    /* box-shadow: 6px 6px 0 rgba(17, 17, 17, 0.15); */
-    cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.carousel-arrow:hover {
-    transform: translateY(-2px);
-    box-shadow: 6px 10px 0 rgba(17, 17, 17, 0.18);
-}
-
-.carousel-arrow:active {
-    transform: translateY(0);
-    box-shadow: 3px 3px 0 rgba(17, 17, 17, 0.18);
-}
-
-.carousel-hint {
-    position: absolute;
-    top: 18px;
-    left: 50%;
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: rgba(17, 17, 17, 0.35);
-    padding: 6px 8px;
-    border: 1px solid rgba(17, 17, 17, 0.2);
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 4px 4px 0 rgba(17, 17, 17, 0.12);
-    transform: translate(-50%, 0);
-    transition: opacity 0.4s ease, transform 0.4s ease;
-}
-
-.carousel-hint.is-dismissed {
-    opacity: 0;
-    transform: translate(-50%, -6px);
-    pointer-events: none;
-}
-
-.carousel-window:focus-visible {
-    outline: 2px solid var(--accent-color);
-    outline-offset: 6px;
-}
-
-@media (max-width: 640px) {
-    .carousel-arrow {
-        width: 38px;
-        height: 38px;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .carousel-track,
-    .carousel-thumb {
-        transition: none !important;
-    }
 }
 
 /* Top Bar */
@@ -1089,6 +931,24 @@ input[type="checkbox"]:active {
     outline-offset: 2px;
 }
 
+.matrix-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.priority-selector {
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.priority-divider {
+    width: clamp(180px, 38vw, 260px);
+    height: 1px;
+    background: rgba(17, 24, 39, 0.1);
+    margin: 12px 0 20px;
+}
+
 /* Matrix Quadrant Selector */
 .matrix-container {
     margin: 14px auto 4px;
@@ -1177,6 +1037,7 @@ input[type="checkbox"]:active {
 
     .priority-selector {
         gap: 16px;
+        justify-content: center;
     }
 
     .priority-group {
@@ -1195,6 +1056,10 @@ input[type="checkbox"]:active {
     .matrix-grid {
         width: clamp(160px, 60vw, 210px);
         height: clamp(160px, 60vw, 210px);
+    }
+
+    .priority-divider {
+        width: clamp(160px, 60vw, 210px);
     }
 
     /* Welcome Screen Mobile */
@@ -1221,12 +1086,6 @@ input[type="checkbox"]:active {
 
     .method-quadrant p {
         font-size: 12px;
-    }
-
-    /* Improved Touch Targets */
-    .carousel-arrow {
-        width: 48px;
-        height: 48px;
     }
 
     .matrix-cell {

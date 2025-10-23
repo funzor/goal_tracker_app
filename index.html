@@ -55,174 +55,149 @@
 
     <div id="menu-overlay" class="menu-overlay"></div>
     
-    <div class="carousel-shell" data-carousel>
-        <div class="carousel-rail">
-            <button class="carousel-arrow carousel-arrow--prev" type="button" data-carousel-prev aria-label="Previous panel">←</button>
-            <div class="carousel-rail-track" aria-hidden="true">
-                <div class="carousel-labels">
-                    <span class="carousel-label">Plan It</span>
-                    <span class="carousel-label">Do It</span>
-                </div>
-                <div class="carousel-line">
-                    <span class="carousel-thumb" data-carousel-thumb></span>
-                </div>
+    <div class="app-block app-block--builder" id="new-goal-section">
+        <!-- <h2>New Goal</h2> -->
+        <div class="goal-input-container">
+            <!-- <div class="input-section step" data-step="1"> -->
+                <!-- <label class="step-label" for="new-goal-input">Goal</label> -->
+                <input type="text" id="new-goal-input" placeholder="enter a goal or task">
             </div>
-            <button class="carousel-arrow carousel-arrow--next" type="button" data-carousel-next aria-label="Next panel">→</button>
-        </div>
 
-        <div class="carousel-window" data-carousel-window tabindex="0">
-            <div class="carousel-track" data-carousel-track>
-                <section class="carousel-slide" data-carousel-panel="builder">
-                    <div class="app-block app-block--builder" id="new-goal-section">
-                        <h2>New Goal</h2>
-                        <div class="goal-input-container" data-arrow-anchor>
-                            <div class="input-section step" data-step="1">
-                                <label class="step-label" for="new-goal-input">Goal</label>
-                                <input type="text" id="new-goal-input" placeholder="enter a goal or task">
-                            </div>
-                            
-                            <div class="matrix-section step" data-step="2">
-                                <label class="step-label">Priority</label>
-                                <div class="priority-selector" data-carousel-static>
-                                    <fieldset class="priority-group" aria-label="Importance level">
-                                        <legend class="priority-group__label">Importance</legend>
-                                        <div class="priority-options">
-                                            <label class="priority-option">
-                                                <input type="radio" name="importance-level" value="Low" checked>
-                                                <span class="priority-chip">Low</span>
-                                            </label>
-                                            <label class="priority-option">
-                                                <input type="radio" name="importance-level" value="High">
-                                                <span class="priority-chip">High</span>
-                                            </label>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset class="priority-group" aria-label="Urgency level">
-                                        <legend class="priority-group__label">Urgency</legend>
-                                        <div class="priority-options">
-                                            <label class="priority-option">
-                                                <input type="radio" name="urgency-level" value="Low" checked>
-                                                <span class="priority-chip">Low</span>
-                                            </label>
-                                            <label class="priority-option">
-                                                <input type="radio" name="urgency-level" value="High">
-                                                <span class="priority-chip">High</span>
-                                            </label>
-                                        </div>
-                                    </fieldset>
+            <!-- <div class="matrix-section step" data-step="2"> -->
+                <!-- <label class="step-label">Priority</label> -->
+                <div class="priority-selector">
+                    <fieldset class="priority-group" aria-label="Importance level">
+                        <legend class="priority-group__label">Importance</legend>
+                        <div class="priority-options">
+                            <label class="priority-option">
+                                <input type="radio" name="importance-level" value="Low" checked>
+                                <span class="priority-chip">Low</span>
+                            </label>
+                            <label class="priority-option">
+                                <input type="radio" name="importance-level" value="High">
+                                <span class="priority-chip">High</span>
+                            </label>
+                        </div>
+                    </fieldset>
+                    <fieldset class="priority-group" aria-label="Urgency level">
+                        <legend class="priority-group__label">Urgency</legend>
+                        <div class="priority-options">
+                            <label class="priority-option">
+                                <input type="radio" name="urgency-level" value="Low" checked>
+                                <span class="priority-chip">Low</span>
+                            </label>
+                            <label class="priority-option">
+                                <input type="radio" name="urgency-level" value="High">
+                                <span class="priority-chip">High</span>
+                            </label>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="priority-divider" aria-hidden="true"></div>
+                <div class="matrix-container">
+                    <div class="matrix-wrapper">
+                        <div class="matrix-axis-y">
+                            <span class="axis-arrow">↑</span>
+                            <span class="axis-label">IMPORTANT</span>
+                        </div>
+                        <div class="matrix-grid">
+                            <div class="matrix-cell matrix-low-high" data-urgency="Low" data-importance="High" title="Important & Not Urgent">
+                                <div class="matrix-text">
+                                    <span class="matrix-primary">FOCUS</span>
                                 </div>
-                                <div class="matrix-container" data-carousel-static>
-                                    <div class="matrix-wrapper">
-                                        <div class="matrix-axis-y">
-                                            <span class="axis-arrow">↑</span>
-                                            <span class="axis-label">IMPORTANT</span>
-                                        </div>
-                                        <div class="matrix-grid">
-                                            <div class="matrix-cell matrix-low-high" data-urgency="Low" data-importance="High" title="Important & Not Urgent">
-                                                <div class="matrix-text">
-                                                    <span class="matrix-primary">FOCUS</span>
-                                                </div>
-                                            </div>
-                                            <div class="matrix-cell matrix-high-high" data-urgency="High" data-importance="High" title="Urgent & Important">
-                                                <div class="matrix-text">
-                                                    <span class="matrix-primary">RIGHT NOW</span>
-                                                    <div class="matrix-tags">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="matrix-cell matrix-low-low selected" data-urgency="Low" data-importance="Low" title="Not Urgent & Not Important">
-                                                <div class="matrix-text">
-                                                    <span class="matrix-primary">SOMEDAY</span>
-                                                    <div class="matrix-tags">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="matrix-cell matrix-high-low" data-urgency="High" data-importance="Low" title="Urgent & Not Important">
-                                                <div class="matrix-text">
-                                                    <span class="matrix-primary">RUSH</span>
-                                                    <div class="matrix-tags">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="matrix-axis-x">
-                                            <span class="axis-label">URGENT</span>
-                                            <span class="axis-arrow">→</span>
-                                        </div>
+                            </div>
+                            <div class="matrix-cell matrix-high-high" data-urgency="High" data-importance="High" title="Urgent & Important">
+                                <div class="matrix-text">
+                                    <span class="matrix-primary">RIGHT NOW</span>
+                                    <div class="matrix-tags">
                                     </div>
                                 </div>
                             </div>
-                            
-                            <div class="step cta-step" data-step="3">
-                                <input type="button" value="Add Goal →" id="add-goal-button" disabled>
+                            <div class="matrix-cell matrix-low-low selected" data-urgency="Low" data-importance="Low" title="Not Urgent & Not Important">
+                                <div class="matrix-text">
+                                    <span class="matrix-primary">SOMEDAY</span>
+                                    <div class="matrix-tags">
+                                    </div>
+                                </div>
                             </div>
+                            <div class="matrix-cell matrix-high-low" data-urgency="High" data-importance="Low" title="Urgent & Not Important">
+                                <div class="matrix-text">
+                                    <span class="matrix-primary">RUSH</span>
+                                    <div class="matrix-tags">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="matrix-axis-x">
+                            <span class="axis-label">URGENT</span>
+                            <span class="axis-arrow">→</span>
                         </div>
                     </div>
-                </section>
+                </div>
+            </div>
 
-                <section class="carousel-slide" data-carousel-panel="review">
-                    <div class="app-block app-block--goals">
-                        <nav class="view-tabs" role="tablist">
-                            <button class="view-tab active" type="button" role="tab" aria-selected="true" data-view="grid">
-                                Matrix View
-                            </button>
-                            <button class="view-tab" type="button" role="tab" aria-selected="false" data-view="list">
-                                List View
-                            </button>
-                        </nav>
-
-                        <h2>Goals <span class="goal-count-badge" id="goal-count-badge">0</span></h2>
-                    
-                        <div id="empty-state" class="empty-state">
-                            <p class="empty-state-text">No goals yet. Add one above.</p>
-                        </div>
-                    
-                        <div id="goals-grid" class="goals-grid-view is-hidden">
-                            <div class="rotate-tip" id="rotate-tip">
-                                Try rotating your phone sideways for the full matrix experience.
-                            </div>
-                            <div class="goals-grid" data-arrow-anchor>
-                                <div class="grid-quadrant quadrant-focus" data-urgency="Low" data-importance="High">
-                                    <span class="quadrant-label">
-                                        FOCUS
-                                    </span>
-                                    <div class="quadrant-body" aria-live="polite"></div>
-                                </div>
-                                <div class="grid-quadrant quadrant-critical" data-urgency="High" data-importance="High">
-                                    <span class="quadrant-label">
-                                        CRITICAL
-                                    </span>
-                                    <div class="quadrant-body" aria-live="polite"></div>
-                                </div>
-                                <div class="grid-quadrant quadrant-someday" data-urgency="Low" data-importance="Low">
-                                    <span class="quadrant-label">
-                                        SOMEDAY
-                                    </span>
-                                    <div class="quadrant-body" aria-live="polite"></div>
-                                </div>
-                                <div class="grid-quadrant quadrant-rush" data-urgency="High" data-importance="Low">
-                                    <span class="quadrant-label">
-                                        RUSH
-                                    </span>
-                                    <div class="quadrant-body" aria-live="polite"></div>
-                                </div>
-                            </div>
-                            
-                            <div id="completed-grid-section" class="completed-grid-section is-hidden">
-                                <h3 class="completed-grid-title">Completed Goals</h3>
-                                <div class="completed-grid-body" id="completed-grid-body"></div>
-                            </div>
-                        </div>
-                    
-                        <ol id="goals-list" class="list-view-panel">
-
-                        </ol>
-                    </div>
-                </section>
+            <!-- <div class="step cta-step" data-step="3"> -->
+                <input type="button" value="Add Goal →" id="add-goal-button" disabled>
             </div>
         </div>
+    </div>
 
-        <span class="carousel-hint" data-carousel-hint>← swipe →</span>
+    <div class="app-block app-block--goals">
+        <nav class="view-tabs" role="tablist">
+            <button class="view-tab active" type="button" role="tab" aria-selected="true" data-view="grid">
+                Matrix View
+            </button>
+            <button class="view-tab" type="button" role="tab" aria-selected="false" data-view="list">
+                List View
+            </button>
+        </nav>
+
+        <h2>Goals <span class="goal-count-badge" id="goal-count-badge">0</span></h2>
+    
+        <div id="empty-state" class="empty-state">
+            <p class="empty-state-text">No goals yet. Tap here to add one.</p>
+        </div>
+    
+        <div id="goals-grid" class="goals-grid-view is-hidden">
+            <div class="rotate-tip" id="rotate-tip">
+                Try rotating your phone sideways for the full matrix experience.
+            </div>
+            <div class="goals-grid">
+                <div class="grid-quadrant quadrant-focus" data-urgency="Low" data-importance="High">
+                    <span class="quadrant-label">
+                        FOCUS
+                    </span>
+                    <div class="quadrant-body" aria-live="polite"></div>
+                </div>
+                <div class="grid-quadrant quadrant-critical" data-urgency="High" data-importance="High">
+                    <span class="quadrant-label">
+                        CRITICAL
+                    </span>
+                    <div class="quadrant-body" aria-live="polite"></div>
+                </div>
+                <div class="grid-quadrant quadrant-someday" data-urgency="Low" data-importance="Low">
+                    <span class="quadrant-label">
+                        SOMEDAY
+                    </span>
+                    <div class="quadrant-body" aria-live="polite"></div>
+                </div>
+                <div class="grid-quadrant quadrant-rush" data-urgency="High" data-importance="Low">
+                    <span class="quadrant-label">
+                        RUSH
+                    </span>
+                    <div class="quadrant-body" aria-live="polite"></div>
+                </div>
+            </div>
+            
+            <div id="completed-grid-section" class="completed-grid-section is-hidden">
+                <h3 class="completed-grid-title">Completed Goals</h3>
+                <div class="completed-grid-body" id="completed-grid-body"></div>
+            </div>
+        </div>
+    
+        <ol id="goals-list" class="list-view-panel">
+
+        </ol>
     </div>
 
     <div class="goal-modal" id="goal-modal" role="status" aria-live="assertive">
