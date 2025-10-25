@@ -213,38 +213,198 @@ const colorThemes = {
     purple: { primary: '#7C3AED', hover: '#6328E0', light: 'rgba(124, 58, 237, 0.1)', tag: 'rgba(124, 58, 237, 0.5)' }
 };
 
-function setThemeColor(colorName) {
-    const resolvedName = colorThemes[colorName] ? colorName : 'slate';
-    const theme = colorThemes[resolvedName];
+const DEFAULT_THEME = 'slate';
+const CUSTOM_COLOR_KEY = 'customThemeColor';
+const colorOptions = document.querySelectorAll('.color-option');
+const customColorOption = document.querySelector('.color-option[data-color="custom"]');
+const customColorInput = customColorOption ? customColorOption.querySelector('.color-option__input') : null;
+
+function normalizeHexColor(value) {
+    if (typeof value !== 'string') {
+        return null;
+    }
+    let hex = value.trim();
+    if (!hex) {
+        return null;
+    }
+    if (!hex.startsWith('#')) {
+        hex = `#${hex}`;
+    }
+    const shortMatch = /^#([A-Fa-f0-9]{3})$/;
+    const longMatch = /^#([A-Fa-f0-9]{6})$/;
+    if (shortMatch.test(hex)) {
+        const [, shorthand] = shortMatch.exec(hex);
+        hex = `#${shorthand.split('').map(char => `${char}${char}`).join('')}`;
+    } else if (!longMatch.test(hex)) {
+        return null;
+    }
+    return hex.toUpperCase();
+}
+
+function hexToRgb(hex) {
+    const normalized = normalizeHexColor(hex);
+    if (!normalized) {
+        return null;
+    }
+    const value = normalized.slice(1);
+    const bigint = parseInt(value, 16);
+    return {
+        r: (bigint >> 16) & 255,
+        g: (bigint >> 8) & 255,
+        b: bigint & 255
+    };
+}
+
+function componentToHex(component) {
+    const clamped = Math.max(0, Math.min(255, Math.round(component)));
+    return clamped.toString(16).padStart(2, '0');
+}
+
+function adjustHexBrightness(hex, amount) {
+    const rgb = hexToRgb(hex);
+    if (!rgb) {
+        return hex;
+    }
+    const adjustChannel = (channel) => {
+        if (amount < 0) {
+            return channel * (1 + amount);
+        }
+        return channel + (255 - channel) * amount;
+    };
+    const r = componentToHex(adjustChannel(rgb.r));
+    const g = componentToHex(adjustChannel(rgb.g));
+    const b = componentToHex(adjustChannel(rgb.b));
+    return `#${r}${g}${b}`.toUpperCase();
+}
+
+function hexToRgba(hex, alpha) {
+    const rgb = hexToRgb(hex);
+    if (!rgb) {
+        return `rgba(59, 91, 114, ${alpha})`;
+    }
+    const clampedAlpha = Math.max(0, Math.min(1, alpha));
+    return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${clampedAlpha})`;
+}
+
+function isHexColorDark(hex) {
+    const rgb = hexToRgb(hex);
+    if (!rgb) {
+        return false;
+    }
+    const luminance = (0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b) / 255;
+    return luminance < 0.5;
+}
+
+function buildThemeFromColor(baseHex) {
+    const normalized = normalizeHexColor(baseHex) || colorThemes[DEFAULT_THEME].primary;
+    return {
+        primary: normalized,
+        hover: adjustHexBrightness(normalized, -0.2),
+        light: hexToRgba(normalized, 0.14),
+        tag: hexToRgba(normalized, 0.45)
+    };
+}
+
+function updateCustomSwatch(hex) {
+    if (!customColorOption) {
+        return;
+    }
+    const normalized = normalizeHexColor(hex);
+    customColorOption.classList.remove('is-dark', 'is-light', 'has-color');
+    if (normalized) {
+        customColorOption.style.background = normalized;
+        customColorOption.classList.add('has-color');
+        const dark = isHexColorDark(normalized);
+        customColorOption.classList.toggle('is-dark', dark);
+        customColorOption.classList.toggle('is-light', !dark);
+    } else {
+        customColorOption.style.removeProperty('background');
+        customColorOption.classList.add('is-light');
+    }
+    if (customColorInput) {
+        const fallback = colorThemes[DEFAULT_THEME].primary;
+        customColorInput.value = normalized || fallback;
+    }
+}
+
+function selectColorOption(colorName) {
+    colorOptions.forEach(option => {
+        option.classList.toggle('selected', option.dataset.color === colorName);
+    });
+}
+
+function setThemeColor(colorName, customHex) {
+    const fallbackTheme = colorThemes[DEFAULT_THEME];
+    let resolvedName = colorName;
+    let themeConfig = null;
+
+    if (colorName === 'custom') {
+        const normalized = normalizeHexColor(customHex) || normalizeHexColor(localStorage.getItem(CUSTOM_COLOR_KEY));
+        if (!normalized) {
+            resolvedName = DEFAULT_THEME;
+            themeConfig = fallbackTheme;
+            localStorage.removeItem(CUSTOM_COLOR_KEY);
+        } else {
+            themeConfig = buildThemeFromColor(normalized);
+            localStorage.setItem(CUSTOM_COLOR_KEY, normalized);
+            updateCustomSwatch(normalized);
+        }
+    } else if (colorThemes[colorName]) {
+        themeConfig = colorThemes[colorName];
+    } else {
+        resolvedName = DEFAULT_THEME;
+        themeConfig = fallbackTheme;
+    }
+
+    const theme = themeConfig || fallbackTheme;
     document.documentElement.style.setProperty('--accent-color', theme.primary);
     document.documentElement.style.setProperty('--accent-hover', theme.hover);
     document.documentElement.style.setProperty('--accent-light', theme.light);
     document.documentElement.style.setProperty('--accent-tag', theme.tag);
     localStorage.setItem('themeColor', resolvedName);
+
+    return resolvedName;
 }
 
 function loadThemeColor() {
-    const savedColor = localStorage.getItem('themeColor') || 'slate';
-    setThemeColor(savedColor);
-    
-    // Update selected state in UI
-    document.querySelectorAll('.color-option').forEach(option => {
-        option.classList.remove('selected');
-        if (option.dataset.color === savedColor) {
-            option.classList.add('selected');
-        }
-    });
+    const storedCustom = normalizeHexColor(localStorage.getItem(CUSTOM_COLOR_KEY));
+    updateCustomSwatch(storedCustom);
+    const savedColor = localStorage.getItem('themeColor') || DEFAULT_THEME;
+    const resolved = setThemeColor(savedColor, storedCustom);
+    selectColorOption(resolved);
 }
 
-// Color picker event listeners
-document.querySelectorAll('.color-option').forEach(option => {
-    option.addEventListener('click', function() {
-        const colorName = this.dataset.color;
-        document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
-        this.classList.add('selected');
-        setThemeColor(colorName);
+colorOptions.forEach(option => {
+    const colorName = option.dataset.color;
+    if (colorName === 'custom') {
+        option.addEventListener('click', (event) => {
+            if (event.target === customColorInput) {
+                return;
+            }
+            const resolved = setThemeColor('custom');
+            selectColorOption(resolved);
+            if (customColorInput) {
+                customColorInput.click();
+            }
+        });
+        return;
+    }
+    option.addEventListener('click', () => {
+        const resolved = setThemeColor(colorName);
+        selectColorOption(resolved);
     });
 });
+
+if (customColorInput) {
+    customColorInput.addEventListener('input', (event) => {
+        const normalized = normalizeHexColor(event.target.value);
+        if (!normalized) {
+            return;
+        }
+        selectColorOption('custom');
+        setThemeColor('custom', normalized);
+    });
+}
 
 // Load theme on page load
 loadThemeColor();

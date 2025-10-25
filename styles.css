@@ -1416,6 +1416,7 @@ input[type="checkbox"]:active {
     cursor: pointer;
     transition: transform 0.15s ease, border-color 0.15s ease;
     position: relative;
+    overflow: hidden;
 }
 
 .color-option:hover {
@@ -1429,6 +1430,47 @@ input[type="checkbox"]:active {
 .color-option.selected {
     border-color: rgba(17, 24, 39, 0.8);
     box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.35);
+}
+
+.color-option__input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.color-option--custom {
+    background-image: linear-gradient(135deg, rgba(17, 24, 39, 0.08) 25%, transparent 25%, transparent 50%, rgba(17, 24, 39, 0.08) 50%, rgba(17, 24, 39, 0.08) 75%, transparent 75%, transparent);
+    background-size: 12px 12px;
+}
+
+.color-option--custom.has-color {
+    background-image: none;
+}
+
+.color-option__custom-mark {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 600;
+    pointer-events: none;
+    letter-spacing: 0.5px;
+    color: rgba(17, 24, 39, 0.75);
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.color-option--custom.is-dark .color-option__custom-mark {
+    color: rgba(255, 255, 255, 0.85);
+    text-shadow: 0 1px 2px rgba(17, 24, 39, 0.45);
+}
+
+.color-option--custom.is-light .color-option__custom-mark {
+    color: rgba(17, 24, 39, 0.75);
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
 }
 
 /* Goals Grid View */
